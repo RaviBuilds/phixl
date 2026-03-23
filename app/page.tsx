@@ -12,7 +12,7 @@ export default function Home():React.ReactElement {
         <Banner />
       </div>
       <HowItWorks />
-
+      <WhyChoose />
     </main>
   )
 }
