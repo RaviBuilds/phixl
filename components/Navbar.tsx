@@ -5,21 +5,20 @@ import Link from "next/link";
 import Image from "next/image";
 import logo from "@/public/logo.avif";
 
-interface NavItem{
-    menu:string;
-    link:string;
+interface NavItem {
+  menu: string;
+  link: string;
 }
 
- const navMenuItem: NavItem[] = [
-   { menu: "How it workes", link: "#" },
-   { menu: "Features", link: "#" },
-   { menu: "Pricing", link: "#" },
-   { menu: "FAQ", link: "#" },
- ];
+const navMenuItem: NavItem[] = [
+  { menu: "How it workes", link: "#" },
+  { menu: "Features", link: "#" },
+  { menu: "Pricing", link: "#" },
+  { menu: "FAQ", link: "#" },
+];
 
-export default function Navbar() : React.ReactElement {
+export default function Navbar(): React.ReactElement {
   const [isNavActive, setIsNavActive] = useState<boolean>(false);
-  function onLogin(){}
 
   return (
     <nav>
@@ -30,7 +29,7 @@ export default function Navbar() : React.ReactElement {
         >
           {isNavActive ? "close" : "☰"}
         </button>
-        <Link href="#">
+        <Link href="/">
           <Image
             src={logo}
             alt="Phixl Logo"
@@ -44,14 +43,19 @@ export default function Navbar() : React.ReactElement {
             onClick={() => setIsNavActive(false)}
           ></div>
         )}
-        <ul className={`${isNavActive ? "block" : "hidden"} md:flex md:flex-row`}>
-            {navMenuItem.map((nav)=>(<li key={nav.menu}>
-                <Link href={nav.link}>{nav.menu}</Link>
-            </li>))}
+        <ul
+          className={`${isNavActive ? "block" : "hidden"} md:flex md:flex-row`}
+        >
+          {navMenuItem.map((nav) => (
+            <li key={nav.menu}>
+              <Link href={nav.link}>{nav.menu}</Link>
+            </li>
+          ))}
         </ul>
         <div className="login">
-           
-            <Link href='/login' className="login-btn">Login</Link>
+          <Link href="/login" className="login-btn">
+            Login
+          </Link>
         </div>
       </div>
     </nav>

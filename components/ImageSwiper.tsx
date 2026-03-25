@@ -27,16 +27,16 @@ export default function ImageSwiper() {
       className="mySwiper"
     >
       <SwiperSlide>
-        <Image src={oldImg1} alt="OldImage" placeholder="blur" />
+        <Image src={oldImg1} alt="OldImage to convert" placeholder="blur" />
       </SwiperSlide>
       <SwiperSlide>
-        <Image src={oldImg2} alt="OldImage" placeholder="blur" />
+        <Image src={oldImg2} alt="OldImage to convert" placeholder="blur" />
       </SwiperSlide>
       <SwiperSlide>
-        <Image src={oldImg3} alt="OldImage" placeholder="blur" />
+        <Image src={oldImg3} alt="OldImage to convert" placeholder="blur" />
       </SwiperSlide>
       <SwiperSlide>
-        <Image src={oldImg4} alt="OldImage" placeholder="blur" />
+        <Image src={oldImg4} alt="OldImage to convert" placeholder="blur" />
       </SwiperSlide>
     </Swiper>
   );

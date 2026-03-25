@@ -13,7 +13,7 @@ export default function Banner(): React.ReactElement {
           <span className="highlighted-title">Phixl AI</span>
         </h1>
         <p>
-          Experiance the future of restore images with our advanced restore AI
+          Experience the future of restore images with our advanced restore AI
           technology.
         </p>
         <div className="button-section">
