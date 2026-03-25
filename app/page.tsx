@@ -13,6 +13,8 @@ export default function Home():React.ReactElement {
       </div>
       <HowItWorks />
       <WhyChoose />
+      <Plans />
+      <FAQ />
     </main>
   )
 }

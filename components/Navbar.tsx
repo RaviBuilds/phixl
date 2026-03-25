@@ -10,16 +10,15 @@ interface NavItem{
     link:string;
 }
 
+ const navMenuItem: NavItem[] = [
+   { menu: "How it workes", link: "#" },
+   { menu: "Features", link: "#" },
+   { menu: "Pricing", link: "#" },
+   { menu: "FAQ", link: "#" },
+ ];
+
 export default function Navbar() : React.ReactElement {
   const [isNavActive, setIsNavActive] = useState<boolean>(false);
-
-  const navMenuItem:NavItem[] = [
-    { menu: "How it workes", link: "#" },
-    { menu: "Features", link: "#" },
-    { menu: "Pricing", link: "#" },
-    { menu: "FAQ", link: "#" },
-  ];
-
   function onLogin(){}
 
   return (

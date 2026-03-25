@@ -9,32 +9,34 @@ interface StepData {
   description: string;
 }
 
+const HowItWorksData: StepData[] = [
+  {
+    id: "step-1",
+    value: 1,
+    icon: "📤",
+    iconInfo: "Upload Photo",
+    description: "Select any photo you want to recover.",
+  },
+  {
+    id: "step-2",
+    value: 2,
+    icon: "✨",
+    iconInfo: "AI Magic",
+    description: "Our AI processes your image instantly.",
+  },
+  {
+    id: "step-3",
+    value: 3,
+    icon: "⬇️",
+    iconInfo: "Download",
+    description: "Get your beautifully restored photo in high quality.",
+  },
+];
+
+
 export default function HowItWorks(): React.ReactElement {
 
-  const HowItWorksData: StepData[] = [
-    {
-      id: "step-1",
-      value: 1,
-      icon: "📤",
-      iconInfo: "Upload Photo",
-      description: "Select any photo you want to recover.",
-    },
-    {
-      id: "step-2",
-      value: 2,
-      icon: "✨",
-      iconInfo: "AI Magic",
-      description: "Our AI processes your image instantly.",
-    },
-    {
-      id: "step-3",
-      value: 3,
-      icon: "⬇️",
-      iconInfo: "Download",
-      description: "Get your beautifully restored photo in high quality.",
-    },
-  ];
-
+  
   return (
     <section>
       <div className="section-wrapper">
