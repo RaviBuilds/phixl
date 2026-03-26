@@ -5,12 +5,10 @@ import Image from "next/image";
 import "@/app/login.css";
 import { useActionState } from "react";
 import { loginAction } from "@/actions/loginAction";
+import Link from "next/link";
 export default function UserLogin() {
-  function closeLogin() {}
 
-  const [state, formAction, isPending] = useActionState<{
-    error: string | null;
-  }>(loginAction, { error: null });
+  const [state, formAction, isPending] = useActionState(loginAction, { error: null as string | null });
 
   return (
     <div className="login-section">
@@ -20,7 +18,7 @@ export default function UserLogin() {
         </div>
         <div className="login-form-wrapper">
           <h2>Login</h2>
-          <form>
+          <form action={formAction}>
             <div className="form-content">
               <label>Email</label>
               <input type="email" name="email" required />
@@ -35,7 +33,11 @@ export default function UserLogin() {
             </div>
 
             <div className="login-btn-section relative">
-              {state.error && <p className="text-red-500 top-[-2rem] text-sm left-1/2 -translate-x-1/2 absolute">Error in login</p>}
+              {state.error && (
+                <p className="text-red-500 top-[-2rem] text-sm left-1/2 -translate-x-1/2 absolute">
+                  Error in login
+                </p>
+              )}
               <button className="login-btn-loginform">
                 {isPending ? "Submitting" : "Login"}
               </button>
@@ -51,12 +53,14 @@ export default function UserLogin() {
           </button>
           <div className="register-link">
             <span>Don't have an account?</span>
-            <p>Register now</p>
+            <p>
+              <Link href="/register">Register now</Link>
+            </p>
           </div>
         </div>
-        <div className="back-to-home" onClick={closeLogin}>
+        <Link href="/" className="back-to-home">
           Back to HomePage
-        </div>
+        </Link>
       </div>
     </div>
   );

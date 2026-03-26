@@ -1,12 +1,28 @@
 "use server";
 
-export function loginAction(prevState: any, formData: FormData) {
+import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
 
-    try {
-    console.log(formData.get("email"));
-    console.log(formData.get("password"));
-    } catch (error) {
-        return { error: "Unexpected error occured"};
+export async function loginAction(prevState: any, formData: FormData) {
+  try {
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
+    //initialize the supabase connection
+
+    const supabase = await createClient();
+
+    //attempt to login
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) {
+      return { error: error.message };
     }
-    return{error: null};
+  } catch (error) {
+    return { error: "Unexpected error occured" };
+  }
+  redirect("/dashboard");
 }

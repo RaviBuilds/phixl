@@ -94,7 +94,9 @@
 .check-box input[type="checkbox"]:checked::after {
   opacity: 1;
 }
-
+button:disabled{
+  @apply bg-gray-500 cursor-no-drop ;
+}
 .login-btn-section {
   @apply mt-10 text-center;
 }

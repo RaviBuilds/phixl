@@ -1,5 +1,5 @@
-import {popularServices } from "@/lib/content";
-import { disclaimers } from "@/lib/content";
+import {popularServices } from "@/utils/content";
+import { disclaimers } from "@/utils/content";
 
 export default function Footer(): React.ReactElement {
   return (

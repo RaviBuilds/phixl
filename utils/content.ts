@@ -8,6 +8,8 @@ export const disclaimers: string[] = [
   "Deepfake generation is strictly prohibited and technically restricted on this platform.",
 ];
 
+
+
 export const popularServices: string[] = [
   "AI Photo Restoration with Phixl AI",
   "Old Family Photo Enhancer with Phixl AI",
@@ -15,3 +17,4 @@ export const popularServices: string[] = [
   "AI Face Sharpener for Blurry Images",
   "Scratch & Damage Remover for Vintage Photos",
 ];
+
