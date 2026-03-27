@@ -2,7 +2,11 @@
 
 import { createClient } from "@/utils/supabase/server";
 
-export default async function registerAction(PrevState: any, formData: FormData) {
+export default async function registerAction(
+  PrevState: any,
+  formData: FormData,
+) {
+  console.log("In the Server Action");
   try {
     const name = formData.get("name") as string;
     const email = formData.get("email") as string;
@@ -20,26 +24,26 @@ export default async function registerAction(PrevState: any, formData: FormData)
         success: null,
       };
     }
-    
+
     const supabase = await createClient();
-    const {error} = await supabase.auth.signUp({
-        email,
-        password,
-        options:{
-            data:{
-                full_name:name,
-            },
+    console.log("Processing register......");
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: name,
         },
-    })
-
-    if(error)
-    {
+      },
+    });
+    console.log("Register Done......");
+    if (error) {
       return {
-        error: "Unexpected error occured while registering new user, please try again!",
+        error:
+          "Unexpected error occured while registering new user, please try again!",
         success: null,
-      }; 
+      };
     }
-
   } catch (error) {}
 
   return { error: null, success: "User Created succesfully" };

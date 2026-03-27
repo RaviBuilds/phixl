@@ -8,11 +8,12 @@ import oldImg3 from "@/public/old-img3.jpg";
 import oldImg4 from "@/public/old-img4.jpg";
 
 // Import Swiper styles
+
 import "swiper/css";
 import "swiper/css/effect-fade";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-
+import "@/app/swiperStyle.css";
 export default function ImageSwiper() {
   return (
     <Swiper

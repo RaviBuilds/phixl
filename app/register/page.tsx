@@ -8,23 +8,22 @@ import Link from "next/link";
 
 export default function RegisterUser() {
   const [state, formAction, isPending] = useActionState(registerAction, {
-    error: null as string | null, success:null as string | null
+    error: null as string | null,
+    success: null as string | null,
   });
   const [passwords, setPasswords] = useState({
     password: "",
     confirm_password: "",
   });
-  const [screenError, setScreenError]= useState(false);
+  const [screenError, setScreenError] = useState(false);
 
-  function checkPassword(){
-    if(passwords.password !== passwords.confirm_password)
-    {
-       setScreenError(true);
+  function checkPassword() {
+    if (passwords.password !== passwords.confirm_password) {
+      setScreenError(true);
+    } else {
+      setScreenError(false);
     }
-    else
-    {
-        setScreenError(false);
-    }
+    console.log("STATE=>", state.error, state.success);
   }
   return (
     <div className="login-section">
@@ -37,16 +36,21 @@ export default function RegisterUser() {
             Password and Confirm password should match!!
           </p>
         )}
+        {state.success && (
+          <p className="text-green-600 text-sm top-12 absolute">
+            {state.success}
+          </p>
+        )}
         <div className="login-form-wrapper">
           <h2>New User Registration</h2>
-          <form action="">
+          <form action={formAction}>
             <div className="form-content">
               <label>Name</label>
               <input type="text" name="name" required />
             </div>
             <div className="form-content">
               <label>Email</label>
-              <input type="email" name="emai" required />
+              <input type="email" name="email" required />
             </div>
 
             <div className="form-content">
@@ -78,7 +82,7 @@ export default function RegisterUser() {
             </div>
             <div className="login-btn-section relative">
               {state.error && (
-                <p className="text-red-500 top-[-2rem] text-sm left-1/2 -translate-x-1/2 absolute">
+                <p className="text-red-500 top-[-2rem] text-sm left-1/2 -translate-x-1/2 absolute w-full">
                   {state.error}
                 </p>
               )}
