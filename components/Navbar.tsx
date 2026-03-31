@@ -5,8 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import logo from "@/public/logo.avif";
 import userIcon from "@/public/user.png";
-import logoutAction from "@/actions/logoutAction";
-import { useActionState } from "react";
+import LogoutBtn from "@/components/LogoutBtn";
+
 
 interface NavbarProps {
     user: any;
@@ -27,12 +27,8 @@ const navMenuItem: NavItem[] = [
 export default function Navbar({ user }: NavbarProps): React.ReactElement {
     const [isNavActive, setIsNavActive] = useState<boolean>(false);
     const [isUserClicked, setIsUserClicked] = useState(false);
-    const [state, onLogout, isPending] = useActionState(logoutAction, {
-        error: null as string | null,
-        success: null as string | null,
-    });
+    
     const onshowUser = () => {
-        console.log("CHEEEEEECKKK");
         setIsUserClicked((prev) => !prev);
         console.log("Value toggled", isUserClicked);
     };
@@ -98,15 +94,7 @@ export default function Navbar({ user }: NavbarProps): React.ReactElement {
                             </Link>
                         </li>
                         <li>
-                            <form action={onLogout}>
-                                <button
-                                    type="submit"
-                                    disabled={isPending}
-                                    className="hover:text-red-500 transition-colors text-left"
-                                >
-                                    {isPending ? " Logging out..." : "Logout"}
-                                </button>
-                            </form>
+                            <LogoutBtn />
                         </li>
                     </ul>
                 </div>
