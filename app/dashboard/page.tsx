@@ -26,8 +26,7 @@ export default async function DashboardPage() {
   .select("*")
   .eq("id", user.id)
   .single();
-
-
+  console.log("PROFILE =>", profile);
   if(error)
   {
     console.error("Error fetching the profile:", error);
@@ -38,7 +37,7 @@ export default async function DashboardPage() {
         <h1 className="text-3xl font-bold">Restore Image</h1>
 
         {/* The Status Dashboard */}
-        <div className="bg-gray-900/50 p-6 rounded-2xl border border-gray-800 flex justify-between items-center">
+        <div className="bg-gray-800 !p-6 rounded-2xl border border-gray-800 flex justify-between items-center">
           <div>
             <p className="text-sm text-gray-400">Workspace for</p>
             <p className="text-xl font-semibold text-white">

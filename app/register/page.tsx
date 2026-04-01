@@ -1,5 +1,5 @@
 "use client";
-import "@/app/login.css";
+
 import logo from "@/public/logo.avif";
 import Image from "next/image";
 import { useActionState, useState } from "react";
@@ -11,6 +11,7 @@ export default function RegisterUser() {
     error: null as string | null,
     success: null as string | null,
   });
+  
   const [passwords, setPasswords] = useState({
     password: "",
     confirm_password: "",
@@ -23,74 +24,100 @@ export default function RegisterUser() {
     } else {
       setScreenError(false);
     }
-    console.log("STATE=>", state.error, state.success);
   }
+
   return (
-    <div className="login-section">
-      <div className="login-section-wrapper relative">
-        <div className="logo-login">
+    <div className="w-full min-h-screen relative flex items-start pt-7 justify-center text-white bg-[var(--black-background)] pb-10">
+      <div className="w-full relative flex flex-col items-center justify-center">
+        
+        {/* Logo */}
+        <div className="w-[10rem] mb-3">
           <Image src={logo} alt="logo" placeholder="blur" className="w-40" />
         </div>
+
+        {/* Global Notifications */}
         {screenError && (
-          <p className="text-red-500 text-sm top-12 absolute">
+          <p className="text-red-500 text-sm top-12 absolute font-bold">
             Password and Confirm password should match!!
           </p>
         )}
         {state.success && (
-          <p className="text-green-600 text-sm top-12 absolute">
+          <p className="text-green-600 text-sm top-12 absolute font-bold">
             {state.success}
           </p>
         )}
-        <div className="login-form-wrapper">
-          <h2>New User Registration</h2>
-          <form action={formAction}>
-            <div className="form-content">
-              <label>Name</label>
-              <input type="text" name="name" required />
-            </div>
-            <div className="form-content">
-              <label>Email</label>
-              <input type="email" name="email" required />
+
+        {/* Form Wrapper */}
+        <div className="w-full mt-10 px-12 sm:max-w-[450px] sm:p-6 sm:border sm:border-[#5c4f64] sm:rounded-[2rem] sm:bg-[#140511]">
+          <h2 className="text-center text-2xl font-bold">New User Registration</h2>
+          
+          <form action={formAction} className="mt-5">
+            {/* Name Input */}
+            <div className="mb-4 w-full">
+              <label className="text-sm font-bold text-white mb-1 block">Name</label>
+              <input 
+                type="text" 
+                name="name" 
+                required 
+                className="bg-[rgb(25,13,34)] border border-[#332b35] transition-all duration-300 ease-linear focus:outline-none focus:ring-1 focus:ring-amber-50 rounded-md text-sm font-bold w-full px-4 py-3"
+              />
             </div>
 
-            <div className="form-content">
-              <label>Password</label>
+            {/* Email Input */}
+            <div className="mb-4 w-full">
+              <label className="text-sm font-bold text-white mb-1 block">Email</label>
+              <input 
+                type="email" 
+                name="email" 
+                required 
+                className="bg-[rgb(25,13,34)] border border-[#332b35] transition-all duration-300 ease-linear focus:outline-none focus:ring-1 focus:ring-amber-50 rounded-md text-sm font-bold w-full px-4 py-3"
+              />
+            </div>
+
+            {/* Password Input */}
+            <div className="mb-4 w-full">
+              <label className="text-sm font-bold text-white mb-1 block">Password</label>
               <input
                 type="password"
                 name="password"
                 value={passwords.password}
                 required
-                onChange={(e) =>
-                  setPasswords({ ...passwords, password: e.target.value })
-                }
+                onChange={(e) => setPasswords({ ...passwords, password: e.target.value })}
+                className="bg-[rgb(25,13,34)] border border-[#332b35] transition-all duration-300 ease-linear focus:outline-none focus:ring-1 focus:ring-amber-50 rounded-md text-sm font-bold w-full px-4 py-3"
               />
             </div>
-            <div className="form-content">
-              <label>Confirm Password</label>
+
+            {/* Confirm Password Input */}
+            <div className="mb-4 w-full">
+              <label className="text-sm font-bold text-white mb-1 block">Confirm Password</label>
               <input
                 type="password"
                 name="confirm_password"
                 required
-                onChange={(e) =>
-                  setPasswords({
-                    ...passwords,
-                    confirm_password: e.target.value,
-                  })
-                }
+                onChange={(e) => setPasswords({ ...passwords, confirm_password: e.target.value })}
                 onBlur={checkPassword}
+                className="bg-[rgb(25,13,34)] border border-[#332b35] transition-all duration-300 ease-linear focus:outline-none focus:ring-1 focus:ring-amber-50 rounded-md text-sm font-bold w-full px-4 py-3"
               />
             </div>
-            <div className="login-btn-section relative">
+
+            {/* Register Button Area */}
+            <div className="mt-10 text-center relative flex flex-col items-center">
               {state.error && (
-                <p className="text-red-500 top-[-2rem] text-sm left-1/2 -translate-x-1/2 absolute w-full">
+                <p className="text-red-500 top-[-2rem] text-sm absolute w-full font-bold">
                   {state.error}
                 </p>
               )}
-              <button className="login-btn-loginform" disabled={screenError}>
+              <button 
+                className="bg-[#ff0099] drop-shadow-[0px_0px_1px_#fff] hover:drop-shadow-[0px_0px_2px_#fff] transition-all duration-300 ease-linear px-4 py-2 rounded-md text-[1rem] font-bold cursor-pointer disabled:bg-gray-500 disabled:cursor-not-allowed" 
+                disabled={screenError || isPending}
+              >
                 {isPending ? "Registering" : "Register"}
               </button>
-              <span>
-                <Link href="/login">Already have account?</Link>
+              
+              <span className="mt-4 block">
+                <Link href="/login" className="underline text-gray-500 text-sm font-bold hover:text-gray-300 transition-colors">
+                  Already have an account?
+                </Link>
               </span>
             </div>
           </form>

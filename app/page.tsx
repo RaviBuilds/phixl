@@ -8,7 +8,7 @@ import FAQ from "@/components/FAQ"
 export default function Home():React.ReactElement {
   return(
     <main>
-      <div className="banner-wrapper">
+      <div className="w-full md:bg-[#050a14] md:relative md:mx-auto">
         <Banner />
       </div>
       <HowItWorks />
