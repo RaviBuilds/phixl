@@ -7,7 +7,6 @@ import logo from "@/public/logo.avif";
 import userIcon from "@/public/user.png";
 import LogoutBtn from "@/components/LogoutBtn";
 
-
 interface NavbarProps {
     user: any;
 }
@@ -32,15 +31,19 @@ export default function Navbar({ user }: NavbarProps): React.ReactElement {
         setIsUserClicked((prev) => !prev);
         console.log("Value toggled", isUserClicked);
     };
+
     return (
-        <nav>
-            <div className="nav-wrapper">
+        <nav className="bg-[#050a14] border-b border-[#2a2a2b] flex flex-row items-center justify-between px-6 py-3 md:py-5 md:px-6 relative">
+            
+            <div className="flex items-center justify-between w-full md:max-w-[724px] md:mx-auto lg:max-w-full">
+                
                 <button
                     onClick={() => setIsNavActive(!isNavActive)}
                     className="md:hidden text-3xl text-amber-50 z-30 cursor-pointer"
                 >
                     {isNavActive ? "close" : "☰"}
                 </button>
+                
                 <Link href="/">
                     <Image
                         src={logo}
@@ -49,23 +52,34 @@ export default function Navbar({ user }: NavbarProps): React.ReactElement {
                         className="w-[140px]"
                     />
                 </Link>
+
                 {isNavActive && (
                     <div
                         className="fixed inset-0 bg-black/30 backdrop-blur-sm z-10 lg:hidden"
                         onClick={() => setIsNavActive(false)}
                     ></div>
                 )}
+
+                {/* Exact translation of `nav ul` + media queries */}
                 <ul
-                    className={`${isNavActive ? "block" : "hidden"} md:flex md:flex-row`}
+                    className={`${
+                        isNavActive ? "block" : "hidden"
+                    } md:flex md:flex-row bg-[#050a14] shadow-[0px_0px_35px_2px_#ff4ab7] md:shadow-none top-[10%] left-1/2 -translate-x-1/2 translate-y-[50%] absolute backdrop-blur z-20 px-10 py-16 rounded-2xl md:top-0 md:px-0 md:py-0 md:translate-x-0 md:relative md:translate-y-0 md:left-0 md:rounded-none`}
                 >
                     {navMenuItem.map((nav) => (
-                        <li key={nav.menu}>
-                            <Link href={nav.link}>{nav.menu}</Link>
+                        <li key={nav.menu} className="pb-6 text-center md:pb-0">
+                            <Link 
+                                href={nav.link} 
+                                className="font-semibold text-[#f5eded] hover:text-white text-xl md:text-sm md:px-6 transition-colors"
+                            >
+                                {nav.menu}
+                            </Link>
                         </li>
                     ))}
                 </ul>
+
                 {user ? (
-                    <div className="user-profile flex flex-col items-center justify-center gap-1">
+                    <div className="flex flex-col items-center justify-center gap-1">
                         <Image
                             src={userIcon}
                             alt="User logged in"
@@ -75,20 +89,26 @@ export default function Navbar({ user }: NavbarProps): React.ReactElement {
                         />
                     </div>
                 ) : (
-                    <div className="login">
-                        <Link href="/login" className="login-btn">
+                    <div>
+                        <Link 
+                            href="/login" 
+                            className="text-white bg-[#ff0099] hover:bg-[#ff4ab7] font-bold transition-all duration-300 ease-linear px-6 py-2 text-sm rounded-full md:py-3 cursor-pointer inline-block"
+                        >
                             Login
                         </Link>
                     </div>
                 )}
             </div>
+
+           
             {isUserClicked && (
-                <div className="user-icon-dashboard">
+                
+                <div className="absolute right-0 bg-amber-50 text-black top-20 w-fit h-fit z-50 rounded-md p-4 shadow-lg">
                     <ul className="flex flex-col gap-2">
                         <li>
                             <Link
                                 href="/dashboard"
-                                className="hover:text-red-500 transition-colors"
+                                className="font-bold hover:text-red-500 transition-colors"
                             >
                                 Dashboard
                             </Link>
