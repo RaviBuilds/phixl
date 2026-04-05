@@ -33,7 +33,7 @@ export default function Navbar({ user }: NavbarProps): React.ReactElement {
     };
 
     return (
-        <nav className="bg-[#050a14] border-b border-[#2a2a2b] flex flex-row items-center justify-between px-6 py-3 md:py-5 md:px-6 relative">
+        <nav className="bg-[#050a14] border-b border-[#2a2a2b] flex flex-row items-center justify-between px-6 py-3 md:py-5 relative">
             
             <div className="flex items-center justify-between w-full md:max-w-[724px] md:mx-auto lg:max-w-full">
                 
@@ -59,8 +59,6 @@ export default function Navbar({ user }: NavbarProps): React.ReactElement {
                         onClick={() => setIsNavActive(false)}
                     ></div>
                 )}
-
-                {/* Exact translation of `nav ul` + media queries */}
                 <ul
                     className={`${
                         isNavActive ? "block" : "hidden"
@@ -70,7 +68,7 @@ export default function Navbar({ user }: NavbarProps): React.ReactElement {
                         <li key={nav.menu} className="pb-6 text-center md:pb-0">
                             <Link 
                                 href={nav.link} 
-                                className="font-semibold text-[#f5eded] hover:text-white text-xl md:text-sm md:px-6 transition-colors"
+                                className="font-semibold text-[#fafafa] hover:text-pink-300! text-xl md:text-sm md:px-6 transition-colors"
                             >
                                 {nav.menu}
                             </Link>
@@ -92,7 +90,7 @@ export default function Navbar({ user }: NavbarProps): React.ReactElement {
                     <div>
                         <Link 
                             href="/login" 
-                            className="text-white bg-[#ff0099] hover:bg-[#ff4ab7] font-bold transition-all duration-300 ease-linear px-6 py-2 text-sm rounded-full md:py-3 cursor-pointer inline-block"
+                            className="text-white bg-[#ff0099] hover:bg-white hover:text-pink-300 font-bold transition-all duration-300 ease-linear px-6! py-2! text-sm rounded-full md:py-3 cursor-pointer inline-block"
                         >
                             Login
                         </Link>
