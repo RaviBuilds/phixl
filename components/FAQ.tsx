@@ -29,25 +29,26 @@ interface FaqTypes {
 
 export default function FAQ(): React.ReactElement {
   return (
-    <section id="faq-section">
-      <div className="section-wrapper">
-        <div className="section-heading">
-          <h2 className="section-title">FAQs</h2>
-          <p className="section-subtitle">
+    <section id="bg-color-background">
+      <div className="px-6 max-w-full py-15 md:py-25 md:max-w-[724px] md:mx-auto lg:max-w-full">
+        <div className="mb-8">
+          <h2 className="text-center text-3xl font-bold mb-4 text-color-white-fresh">FAQs</h2>
+          <p className="text-center text-lg text-color-gray">
             Questions about Phixl AI? Here are the answers!
           </p>
         </div>
-        <div className="faq-section-contents">
-          <div className="faq-block">
+        <div className="mt-5 max-w-full lg:max-w-[724px] mx-auto">
+          <div>
             <ul>
               {faqs.map((faq) => (
-                    <li key={faq.question}>
-                      <h2 className="faq-heading">{faq.question}</h2>
-                      <p className="faq-para">{faq.answer}</p>
-                      <hr />
-                    </li>
-                  ))
-              }
+                <li key={faq.question} className="mt-6">
+                  <h2 className="text-xl font-bold mb-3 text-color-white-fresh">
+                    {faq.question}
+                  </h2>
+                  <p className="text-[1rem] text-color-white">{faq.answer}</p>
+                  <hr className="text-color-gray mt-6" />
+                </li>
+              ))}
             </ul>
           </div>
         </div>

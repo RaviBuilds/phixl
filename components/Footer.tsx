@@ -1,31 +1,30 @@
 import { popularServices } from "@/utils/content";
 import { disclaimers } from "@/utils/content";
 
-export default function Footer(): JSX.Element {
+export default function Footer(): React.ReactElement {
   return (
-    <section className="bg-[#050a14] w-full px-6! py-3! md:py-5">
-      <div className="px-6 max-w-full py-15 md:py-25 md:max-w-181 md:mx-auto lg:max-w-full text-white">
+    <section className="bg-blue-low-200! px-6! ">
+      <div className="px-6 max-w-full py-15 md:py-15 md:max-w-181 md:mx-auto lg:max-w-full">
         <footer>
           <div>
-            <h3 className="mb-4 text-[1rem] text-amber-50 font-semibold">
+            <h3 className="mb-4 text-[1rem] text-white-fresh font-semibold">
               Quick Links
             </h3>
             {/* Exact translation of `footer .quicklinks ul` */}
             <ul className="flex flex-row gap-5">
               {/* Exact translation of `footer li` */}
-              <li className="text-sm text-gray-500 cursor-pointer hover:text-gray-300 transition-colors">
+              <li className="text-sm text-color-white! cursor-pointer hover:text-red-brand-light! transition-colors">
                 Terms
               </li>
-              <li className="text-sm text-gray-500 cursor-pointer hover:text-gray-300 transition-colors">
+              <li className="text-sm text-color-white! cursor-pointer hover:text-red-brand-light! transition-colors">
                 Privacy
               </li>
-              <li className="text-sm text-gray-500 cursor-pointer hover:text-gray-300 transition-colors">
+              <li className="text-sm text-color-white! cursor-pointer hover:text-red-brand-light! transition-colors">
                 Contact
               </li>
             </ul>
           </div>
 
-        
           <hr className="border-[#282e3a] my-6" />
 
           <div>
@@ -36,7 +35,7 @@ export default function Footer(): JSX.Element {
               {popularServices.map((item) => (
                 <li
                   key={item}
-                  className="text-sm text-gray-500 cursor-pointer hover:text-gray-300 transition-colors"
+                  className="text-sm text-color-white! cursor-pointer hover:text-red-brand-light! transition-colors"
                 >
                   <p>{item}</p>
                 </li>

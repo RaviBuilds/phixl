@@ -1,10 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
-import "@/app/imageReveal.css";
 import { StaticImageData } from "next/image";
-
-// define the props
 
 interface ImageRevealProps {
   img1: StaticImageData;
@@ -29,6 +26,7 @@ export default function ImageReveal({ img1, img2 }: ImageRevealProps) {
 
     return () => resizeObserver.disconnect();
   }, []);
+
   useEffect(() => {
     if (!sliceHeight1 || !splitRef1.current || !scannerRef.current) return;
 
@@ -79,11 +77,18 @@ export default function ImageReveal({ img1, img2 }: ImageRevealProps) {
   }, [sliceHeight1]);
 
   return (
-    <div className="wrapper1" style={{ backgroundImage: `url(${img1.src})` }}>
-      <div className="split1" ref={splitRef1}>
+    <div
+      className="relative mx-auto! my-5 aspect-square w-4/5 max-w-[640px] overflow-hidden rounded-[15px] border-4 border-black bg-cover bg-center bg-no-repeat px-6 shadow-[0_0_40px_15px_#ff00994b] md:px-0"
+      style={{ backgroundImage: `url(${img1.src})` }}
+    >
+      <div
+        ref={splitRef1}
+        className="absolute left-0 top-0 grid h-full w-full grid-rows-[repeat(100,1fr)]"
+      >
         {Array.from({ length: numSlices1 }, (_, i) => (
           <span
             key={i}
+            className="m-0 block h-full w-full border-none bg-[length:100%_10000%] bg-no-repeat p-0 opacity-100"
             style={{
               backgroundImage: `url(${img2.src})`,
               backgroundPosition: `0 -${i * sliceHeight1}px`,
@@ -92,7 +97,10 @@ export default function ImageReveal({ img1, img2 }: ImageRevealProps) {
         ))}
       </div>
 
-      <div className="scanner-line1 vertical1" ref={scannerRef}></div>
+      <div
+        ref={scannerRef}
+        className="pointer-events-none absolute left-0 top-0 z-[5] h-1 w-full translate-y-0 bg-gradient-to-r from-[#050a14] via-white to-[#050a14] opacity-60 will-change-transform"
+      ></div>
     </div>
   );
 }

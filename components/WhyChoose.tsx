@@ -1,3 +1,4 @@
+import RedLabel from "@/components/RedLabel";
 
 interface WhyChooseTypes{
   id:string;
@@ -53,34 +54,37 @@ interface WhyChooseTypes{
  
 export default function WhyChoose(): React.ReactElement {
 
- 
   return (
     <section>
-      <div className="section-wrapper">
-        <div className="section-heading section-heading-why">
-          <span className="main-tagline mx-auto !block max-w-fit">
-            Why Choose Phixl?
-          </span>
-          <h2 className="section-title section-title-why ">
+      <div className="px-6 max-w-full py-15 md:py-25 md:max-w-[724px] md:mx-auto lg:max-w-full">
+        <div className="mb-8! md:max-w-[600px]! block mx-auto!">
+          <div className="w-full flex items-center justify-center">
+            <RedLabel>🤔 Why Choose Phixl ?</RedLabel>
+          </div>
+          <h2 className="text-center text-4xl font-bold mb-4 md:text-5xl text-color-white-fresh">
             Experience the Best AI Technology
           </h2>
-          <p className="section-subtitle">
+          <p className="text-center text-lg text-color-gray">
             Our advanced features make creating stunning transformations simple
             and fast
           </p>
         </div>
-        <div className="section-content-cards">
-          <div className="cards-wrapper">
+        <div className="pt-3">
+          <div className="grid gap-6 grid-cols-[repeat(auto-fill,minmax(18rem,1fr))]">
             {whyChooseData.map((data) => (
-              <div className="feature-card" key={data.id}>
-                <div className="feature-card-img">{data.icon}</div>
-                <h3 className="feature-card-heading">{data.iconInfo}</h3>
-                <p className="feature-card-info">
+              <div
+                className="bg-blue-low-200 border border-gray-text rounded-2xl p-6 text-start cursor-pointer"
+                key={data.id}
+              >
+                <div className="text-4xl mb-4">{data.icon}</div>
+                <h3 className="text-xl font-bold mb-3 text-color-white-fresh">
+                  {data.iconInfo}
+                </h3>
+                <p className="text-[1rem] text-color-white-low">
                   {data.description}
                 </p>
               </div>
             ))}
-            
           </div>
         </div>
       </div>
