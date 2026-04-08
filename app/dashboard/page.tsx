@@ -1,5 +1,6 @@
 "use server"
 
+import ImageUpload from "@/components/ImageUpload";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
@@ -33,7 +34,7 @@ export default async function DashboardPage() {
 
   return (
     <>
-      <div className="flex flex-col gap-8 max-w-5xl mx-auto overflow-hidden!">
+      <div className="flex flex-col gap-8 max-w-5xl mx-auto overflow-hidden">
         <h1 className="text-3xl font-bold">Restore Image</h1>
 
         {/* The Status Dashboard */}
@@ -62,9 +63,9 @@ export default async function DashboardPage() {
         </div>
 
         {/* Placeholder for Task 2.2 */}
-        <div className="mt-4 border-2 border-dashed border-gray-800 rounded-2xl p-24 flex items-center justify-center text-gray-500">
-          [Drag and Drop Upload Zone goes here]
-        </div>
+        {/* <div className="mt-4 border-2 border-dashed border-gray-800 rounded-2xl p-24 flex items-center justify-center text-gray-500"> */}
+          <ImageUpload />
+        {/* </div> */}
       </div>
     </>
   );
