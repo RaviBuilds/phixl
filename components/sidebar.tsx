@@ -5,10 +5,10 @@ export default function Sidebar() {
   return (
     <aside className="w-64 border-r border-gray-800 p-6 hidden flex-col justify-between md:flex">
       <div className="pt-4!">
-        <h2 className="text-2xl text-center font-bold text-pink-500">
+        <h2 className="text-2xl text-center font-bold text-red-brand pb-4">
           Dashboard
         </h2>
-        <nav className="flex flex-col gap-4 text-gray-300 text-[0.9rem]">
+        <nav className="flex flex-row gap-4 text-gray-300 text-[0.9rem]">
           <Link
             href="/dashboard"
             className="hover:text-white transition-colors"

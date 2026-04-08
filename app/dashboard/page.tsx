@@ -8,7 +8,6 @@ export default async function DashboardPage() {
   const supabase = await createClient();
 
   // 1. get the user securely athenticated 
-
   const { data: {user}} = await supabase.auth.getUser();
 
   if(!user)
@@ -20,7 +19,6 @@ export default async function DashboardPage() {
 
 
   //  2. Fetch the specific details of the user from our new table
-
   const {data: profile, error} = await supabase
   .from("profiles")
   .select("*")
@@ -31,28 +29,30 @@ export default async function DashboardPage() {
   {
     console.error("Error fetching the profile:", error);
   }
+
+
   return (
     <>
-      <div className="flex flex-col gap-8 max-w-5xl mx-auto">
+      <div className="flex flex-col gap-8 max-w-5xl mx-auto overflow-hidden!">
         <h1 className="text-3xl font-bold">Restore Image</h1>
 
         {/* The Status Dashboard */}
-        <div className="bg-gray-800 !p-6 rounded-2xl border border-gray-800 flex justify-between items-center">
-          <div>
+        <div className="bg-gray-800 p-6 rounded-2xl border border-gray-800 flex justify-between items-center">
+          <div className="flex flex-col items-center justify-center">
             <p className="text-sm text-gray-400">Workspace for</p>
             <p className="text-xl font-semibold text-white">
               {profile?.full_name}
             </p>
           </div>
           <div className="text-right flex items-center gap-6">
-            <div>
+            <div className="flex flex-col items-center justify-center">
               <p className="text-sm text-gray-400">Plan</p>
-              <p className="text-pink-500 font-bold uppercase tracking-wider">
+              <p className="text-red-brand-light italic font-bold uppercase tracking-wider">
                 {profile?.plan_name}
               </p>
             </div>
             <div className="w-px h-8 bg-gray-700"></div> {/* Divider */}
-            <div>
+            <div className="flex flex-col items-center justify-center">
               <p className="text-sm text-gray-400">Credits</p>
               <p className="text-2xl font-bold text-white">
                 {profile?.credits}
