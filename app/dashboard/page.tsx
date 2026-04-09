@@ -3,7 +3,7 @@
 import ImageUpload from "@/components/ImageUpload";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
-
+import Link from "next/link";
 export default async function DashboardPage() {
     
   const supabase = await createClient();
@@ -30,6 +30,8 @@ export default async function DashboardPage() {
   {
     console.error("Error fetching the profile:", error);
   }
+
+  const hasCredits = profile?.credits > 0;
 
 
   return (
@@ -61,11 +63,28 @@ export default async function DashboardPage() {
             </div>
           </div>
         </div>
-
-        {/* Placeholder for Task 2.2 */}
-        {/* <div className="mt-4 border-2 border-dashed border-gray-800 rounded-2xl p-24 flex items-center justify-center text-gray-500"> */}
+        {hasCredits ? (
           <ImageUpload />
-        {/* </div> */}
+        ) : (
+          <div className="mt-4 border-2 border-dashed border-gray-700 bg-blue-low-200 rounded-2xl p-12 md:p-24 flex flex-col items-center justify-center text-center">
+            <div className="h-16 w-16 bg-gray-800 rounded-full flex items-center justify-center mb-4 text-2xl">
+              💳
+            </div>
+            <h3 className="text-xl font-bold text-color-white-fresh mb-2">
+              Zero Credits Remaining
+            </h3>
+            <p className="text-sm text-color-gray mb-8 max-w-md">
+              You don't have sufficient credit to perform this operation.
+              Upgrade your plan to continue restoring images.
+            </p>
+            <Link
+              href="/"
+              className="bg-red-brand hover:bg-red-brand-light text-color-white-fresh px-8 py-3 rounded-full font-bold transition-all drop-shadow-[0px_0px_1px_#fff]"
+            >
+              Upgrade Plan
+            </Link>
+          </div>
+        )}
       </div>
     </>
   );
