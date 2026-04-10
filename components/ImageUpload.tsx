@@ -118,8 +118,7 @@ export default function ImageUpload() {
       console.error("Download failed:", error);
       setErrorMsg("Failed to download image. You can right-click the image and save it.");
     }
-    }
-  };
+    };
 
   if (restoredImage && previewUrl) {
     return (
@@ -184,6 +183,12 @@ export default function ImageUpload() {
   // --- Upload UI remains the same below ---
   return (
     <div className="w-full mt-4">
+      {errorMsg && (
+        <div className="w-full mb-6 bg-red-500/10 border border-red-500/50 rounded-xl p-4 flex items-center gap-3">
+          <AlertCircle className="text-red-500 w-5 h-5 flex-shrink-0" />
+          <p className="text-red-200 text-sm font-medium">{errorMsg}</p>
+        </div>
+      )}
       {!previewUrl ? (
         <div
           {...getRootProps()}
