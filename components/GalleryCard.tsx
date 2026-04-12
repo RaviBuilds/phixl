@@ -7,8 +7,8 @@ import { deleteImageAction } from "@/actions/deleteImageAction";
 
 interface GalleryCardProps {
   publicUrl: string;
-  id: string; // Needed for deletion
-  imagePath: string; // Needed for storage deletion
+  id: string;
+  imagePath: string;
 }
 
 export default function GalleryCard({
@@ -17,19 +17,31 @@ export default function GalleryCard({
   imagePath,
 }: GalleryCardProps): React.ReactElement {
   const [isZoomed, setIsZoomed] = useState<boolean>(false);
+
+  // startTransition controls the isPending state automatically!
   const [isPending, startTransition] = useTransition();
 
-  // TODO: Create a handleAction function here that calls a new Server Action (deleteImageAction)
-  const handleAction =()=>{
-    console.log("hello");
-   const response =  deleteImageAction({publicUrl, id, imagePath});
+  const handleAction = () => {
+    // 1. Wrap the async call in startTransition so the spinner activates
+    startTransition(async () => {
+      // 2. Await the server action
+      const response = await deleteImageAction({
+        publicUrl,
+        id,
+        imagePath,
+      });
 
-  }
-  // Inside that function, wrap the server action call in startTransition()
+      if (response.success) {
+        console.log("Image deleted successfully");
+        // We do NOT need revalidatePath here. The Server Action handles it!
+      } else {
+        console.error("Failed to delete image");
+      }
+    });
+  };
 
   return (
     <>
-      {/* --- Zoom Modal (Rendered outside the card layout to prevent z-index issues) --- */}
       {isZoomed && (
         <div
           onClick={() => setIsZoomed(false)}
@@ -47,9 +59,7 @@ export default function GalleryCard({
         </div>
       )}
 
-      {/* --- Main Card Layout --- */}
       <div className="relative group overflow-hidden rounded-xl bg-gray-900 border border-gray-800 shadow-lg aspect-square">
-        {/* Background Image */}
         <Image
           src={publicUrl}
           alt="Restored"
@@ -57,7 +67,6 @@ export default function GalleryCard({
           className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
 
-        {/* Hover Overlay with Action Buttons */}
         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-6">
           <button
             onClick={() => setIsZoomed(true)}
@@ -68,9 +77,9 @@ export default function GalleryCard({
           </button>
 
           <button
-            onClick={() => handleAction()}
+            onClick={handleAction} // Fixed the click handler syntax
             disabled={isPending}
-            className="p-3 bg-red-500/20 hover:bg-red-500/40 rounded-full text-red-300 hover:text-red-100 backdrop-blur-sm transition-colors disabled:opacity-50 hover:z-500"
+            className="p-3 bg-red-500/20 hover:bg-red-500/40 rounded-full text-red-300 hover:text-red-100 backdrop-blur-sm transition-colors disabled:opacity-50"
             title="Delete Image"
           >
             {isPending ? (
