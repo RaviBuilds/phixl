@@ -7,7 +7,7 @@ import { revalidatePath } from "next/cache";
 //replicate initialization done
 const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN,
-  useFileOutput:false,
+  useFileOutput: false,
 });
 
 export async function restoreImage(imagePath: string) {
@@ -28,7 +28,7 @@ export async function restoreImage(imagePath: string) {
       .select("credits")
       .eq("id", user.id)
       .single();
-    console.log("Profile=>", profile);
+   
     if (!profile || profile.credits <= 0) {
       throw new Error("Insufficient Credit please update your plan");
     }
@@ -40,7 +40,7 @@ export async function restoreImage(imagePath: string) {
       .getPublicUrl(imagePath);
 
     const imageUrl = publicUrlData.publicUrl;
-    console.log("Sending image to replicate AI");
+  
 
     //********  call the replicate AI model (codeFormer for restoration)
 
@@ -57,23 +57,64 @@ export async function restoreImage(imagePath: string) {
       },
     );
 
-    console.log("Output =>", output);
-    //****  Deduvt 1 credit from the user's profile
+    //****  Deduct 1 credit from the user's profile
 
-    const {data, error} = await supabase
+    const { data, error } = await supabase
       .from("profiles")
       .update({ credits: profile.credits - 1 })
       .eq("id", user.id);
-   console.log("DATA=>", data);
-   console.log("ERROR=>", error);
+ 
+
+    //  Download the restored image
+    const replicateUrl = output as string;
+    const restored_image = await fetch(replicateUrl);
+    const imageBuffer = await restored_image.arrayBuffer();
+
+    //Create a permant path for the image on supabase bucket
+    const restored_file_name = `restored - ${Date.now()}.png`;
+    const restored_file_path = `${user.id}/${restored_file_name}`;
+
+    // upload the image to the supabase bucket
+
+    const { data: uploadData, error: uploadError } = await supabase.storage
+      .from("restored_images")
+      .upload(restored_file_path, imageBuffer, { contentType: "image/png" });
+
+    if (uploadError) {
+      throw new Error(uploadError?.message);
+    }
+
+    //store the file in DB
+    const { error: dbError } = await supabase
+      .from("restorations")
+      .insert({ user_id: user.id, image_url: restored_file_path });
+
+    if (dbError) {
+      console.error("Database insert error", dbError);
+      throw new Error("Image Uploaded but failed to save in gallery.");
+    }
+
     //**** return the restored image URL to browser
-    revalidatePath("/dashboard");
-    return { success: true, restoredImageUrl: output as string };
+
+    const { data: restoredImageData } = supabase.storage
+      .from("restored_images")
+      .getPublicUrl(restored_file_path);
+    const restoredImagePath = restoredImageData.publicUrl;
+    revalidatePath("/dashboard", "layout");
+    return { success: true, restoredImageUrl: restoredImagePath as string };
   } catch (error: any) {
-    console.log("AI Restoration Error:", error);
+    console.error("AI Restoration Error:", error);
+    let friendlyErrorMessage = "Failed to restore the image. Please try again";
+    if (
+      error.message.includes("402") ||
+      error.message.includes("Insufficient credit")
+    ) {
+      friendlyErrorMessage =
+        "Our AI servers are currently experiencing high load. Please try again later.";
+    }
     return {
       success: false,
-      error: error.message || "Failed to restore the image.",
+      error: friendlyErrorMessage,
     };
   }
 }

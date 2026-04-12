@@ -4,28 +4,23 @@ import ImageUpload from "@/components/ImageUpload";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-export default async function DashboardPage() {
-    
+
+
+export default async function DashboardPage() {    
   const supabase = await createClient();
 
   // 1. get the user securely athenticated 
   const { data: {user}} = await supabase.auth.getUser();
-
   if(!user)
   {
     redirect("/login");
   }
-
-   console.log("USER is already logged in ", user);
-
-
   //  2. Fetch the specific details of the user from our new table
   const {data: profile, error} = await supabase
   .from("profiles")
   .select("*")
   .eq("id", user.id)
   .single();
-  console.log("PROFILE =>", profile);
   if(error)
   {
     console.error("Error fetching the profile:", error);
