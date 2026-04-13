@@ -2,14 +2,34 @@
 import google_logo from "@/public/logo-google.png";
 import logo from "@/public/logo.avif";
 import Image from "next/image";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { loginAction } from "@/actions/loginAction";
 import Link from "next/link";
+import { createClient } from "@/utils/supabase/client";
 
 export default function UserLogin() {
   const [state, formAction, isPending] = useActionState(loginAction, {
     error: null as string | null,
   });
+ const [isGoogleLoading, setIsGoogleLoading]= useState(false);
+
+ const supabase = createClient();
+
+ const handleGoogleAuth = async()=>{
+
+  setIsGoogleLoading(true);
+  const {error} = await supabase.auth.signInWithOAuth({
+    provider:"google",
+    options:{
+      redirectTo:`${window.location.origin}/api/auth/callback`
+    },
+  });
+  if(error)
+  {
+    console.error("Google Auth Error", error.message);
+    setIsGoogleLoading(false);
+  }
+ }
 
   return (
     <div className="bg-[#050a14] w-full h-screen relative flex items-start pt-7 justify-center text-white">
@@ -46,14 +66,6 @@ export default function UserLogin() {
               />
             </div>
 
-            <label className="relative inline-flex items-center cursor-pointer text-[16px] gap-[8px]">
-              <input
-                type="checkbox"
-                className="appearance-none w-[24px] h-[24px] border-2 border-[#ccc] rounded-[4px] bg-white cursor-pointer relative transition-colors duration-200 checked:bg-[#ff0099] checked:border-[#ff0099] after:content-[''] after:absolute after:top-[5px] after:left-[8px] after:w-[6px] after:h-[12px] after:border-solid after:border-white after:border-b-2 after:border-r-2 after:rotate-45 after:opacity-0 checked:after:opacity-100 after:transition-opacity after:duration-200"
-              />
-              <span>Remember me</span>
-            </label>
-
             <div className="mt-10 text-center relative">
               {state.error && (
                 <p className="text-red-500 top-[-2rem] text-sm left-1/2 -translate-x-1/2 absolute">
@@ -76,14 +88,24 @@ export default function UserLogin() {
             <span>Or Login Via</span>
           </div>
 
-          <button className="shadow-[inset_0px_0px_10px_5px_#cccccc49] bg-[#830550] drop-shadow-[0px_0px_1px_#fff] transition-all duration-300 ease-linear px-4 py-2 rounded-md text-[1rem] font-bold cursor-pointer flex flex-row w-full items-center justify-center gap-3">
-            <Image
-              src={google_logo}
-              alt="google"
-              placeholder="blur"
-              className="w-7"
-            />
-            <span className="text-sm">Google</span>
+          <button
+            onClick={handleGoogleAuth}
+            className="shadow-[inset_0px_0px_10px_5px_#cccccc49] bg-[#830550] drop-shadow-[0px_0px_1px_#fff] transition-all duration-300 ease-linear px-4 py-2 rounded-md text-[1rem] font-bold cursor-pointer flex flex-row w-full items-center justify-center gap-3"
+            disabled={isGoogleLoading || isPending}
+          >
+            {isGoogleLoading ? (
+              <span className="text-sm">Redirecting...</span>
+            ) : (
+              <>
+                <Image
+                  src={google_logo}
+                  alt="google"
+                  placeholder="blur"
+                  className="w-7"
+                />
+                <span className="text-sm">Google</span>
+              </>
+            )}
           </button>
 
           <div className="flex flex-row gap-3 w-full mt-5 items-center justify-center">
@@ -106,71 +128,3 @@ export default function UserLogin() {
     </div>
   );
 }
-
-// "use client";
-// import google_logo from "@/public/logo-google.png";
-// import logo from "@/public/logo.avif";
-// import Image from "next/image";
-// import "@/app/login.css";
-// import { useActionState } from "react";
-// import { loginAction } from "@/actions/loginAction";
-// import Link from "next/link";
-// export default function UserLogin() {
-
-//   const [state, formAction, isPending] = useActionState(loginAction, { error: null as string | null });
-
-//   return (
-//     <div className="login-section">
-//       <div className="login-section-wrapper">
-//         <div className="logo-login">
-//           <Image src={logo} alt="logo" placeholder="blur" className="w-40" />
-//         </div>
-//         <div className="login-form-wrapper">
-//           <h2>Login</h2>
-//           <form action={formAction}>
-//             <div className="form-content">
-//               <label>Email</label>
-//               <input type="email" name="email" required />
-//             </div>
-//             <div className="form-content">
-//               <label>Password</label>
-//               <input type="password" name="password" required />
-//             </div>
-//             <div className="check-box">
-//               <input type="checkbox" />
-//               <span>Remember me</span>
-//             </div>
-
-//             <div className="login-btn-section relative">
-//               {state.error && (
-//                 <p className="text-red-500 top-[-2rem] text-sm left-1/2 -translate-x-1/2 absolute">
-//                   Error in login
-//                 </p>
-//               )}
-//               <button className="login-btn-loginform">
-//                 {isPending ? "Submitting" : "Login"}
-//               </button>
-//               <span>Forgot your passord?</span>
-//             </div>
-//           </form>
-//           <div className="login-via">
-//             <span>Or Login Via</span>
-//           </div>
-//           <button className="google-btn">
-//             <Image src={google_logo} alt="google" placeholder="blur" />
-//             <span>Google</span>
-//           </button>
-//           <div className="register-link">
-//             <span>Don't have an account?</span>
-//             <p>
-//               <Link href="/register">Register now</Link>
-//             </p>
-//           </div>
-//         </div>
-//         <Link href="/" className="back-to-home">
-//           Back to HomePage
-//         </Link>
-//       </div>
-//     </div>
-//   );
-// }

@@ -1,10 +1,11 @@
 "use client";
-
+import google_logo from "@/public/logo-google.png";
 import logo from "@/public/logo.avif";
 import Image from "next/image";
 import { useActionState, useState } from "react";
 import registerAction from "@/actions/registerAction";
 import Link from "next/link";
+import { createClient } from "@/utils/supabase/client";
 
 export default function RegisterUser() {
   const [state, formAction, isPending] = useActionState(registerAction, {
@@ -17,6 +18,9 @@ export default function RegisterUser() {
     confirm_password: "",
   });
   const [screenError, setScreenError] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+
+  const supabse = createClient();
 
   function checkPassword() {
     if (passwords.password !== passwords.confirm_password) {
@@ -25,6 +29,21 @@ export default function RegisterUser() {
       setScreenError(false);
     }
   }
+
+  const handleGoogleAuth = async () => {
+    setIsGoogleLoading(true);
+    const { error } = await supabse.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/api/auth/callback`,
+      },
+    });
+
+    if (error) {
+      console.error("Google Auth Error", error.message);
+      setIsGoogleLoading(false);
+    }
+  };
 
   return (
     <div className="bg-[#050a14] w-full min-h-screen relative flex items-start pt-7 justify-center text-white pb-10">
@@ -48,9 +67,7 @@ export default function RegisterUser() {
 
         {/* Form Wrapper */}
         <div className="w-full mt-10 px-12 sm:max-w-[450px] sm:p-6 sm:border sm:border-[#5c4f64] sm:rounded-[2rem] sm:bg-[#140511]">
-          <h2 className="text-center text-2xl font-bold">
-            New User Registration
-          </h2>
+          <h2 className="text-center text-2xl font-bold">Signup</h2>
 
           <form action={formAction} className="mt-5">
             {/* Name Input */}
@@ -127,7 +144,7 @@ export default function RegisterUser() {
                 className="bg-[#ff0099] drop-shadow-[0px_0px_1px_#fff] transition-all duration-300 ease-linear px-4 py-2 rounded-md text-[1rem] font-bold cursor-pointer hover:drop-shadow-[0px_0px_2px_#fff] disabled:bg-gray-500 disabled:cursor-no-drop"
                 disabled={screenError || isPending}
               >
-                {isPending ? "Registering" : "Register"}
+                {isPending ? "Processing" : "Signup"}
               </button>
 
               <span className="block mt-2 underline text-gray-500 text-sm font-bold hover:text-gray-300 cursor-pointer">
@@ -135,6 +152,30 @@ export default function RegisterUser() {
               </span>
             </div>
           </form>
+
+          <div className="my-6 relative block text-center w-full before:content-[''] before:absolute before:w-[32%] before:h-full before:left-0 before:-translate-y-[47%] before:border-b before:border-[rgb(179,179,179)] after:content-[''] after:absolute after:w-[32%] after:h-full after:right-0 after:-translate-y-[47%] after:border-b after:border-[rgb(179,179,179)]">
+            <span>Or Signup Via</span>
+          </div>
+
+          <button
+            onClick={handleGoogleAuth}
+            className="shadow-[inset_0px_0px_10px_5px_#cccccc49] bg-[#830550] drop-shadow-[0px_0px_1px_#fff] transition-all duration-300 ease-linear px-4 py-2 rounded-md text-[1rem] font-bold cursor-pointer flex flex-row w-full items-center justify-center gap-3"
+            disabled={isGoogleLoading || isPending}
+          >
+            {isGoogleLoading ? (
+              <span className="text-sm">Redirecting...</span>
+            ) : (
+              <>
+                <Image
+                  src={google_logo}
+                  alt="google"
+                  placeholder="blur"
+                  className="w-7"
+                />
+                <span className="text-sm">Google</span>
+              </>
+            )}
+          </button>
         </div>
 
         {/* Back Link */}
