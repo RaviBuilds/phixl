@@ -134,7 +134,7 @@ export default function Navbar({ user }: NavbarProps): React.ReactElement {
                       Dashboard
                     </Link>
                   </li>
-                  <li onClick={() => setIsUserClicked(false)}>
+                  <li>
                     <LogoutBtn />
                   </li>
                 </ul>

@@ -24,7 +24,6 @@ export default async function RootLayout({
 }>) {
   const supabse = await createClient();
   const { data :{user} } = await supabse.auth.getUser();
-  console.log("LOGIN DATA =>", user);
   return (
     <html lang="en" className={quicksand.variable}>
       <body className=" bg-[#0b0f19] text-white min-h-screen font-sans">

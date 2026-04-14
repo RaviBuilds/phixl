@@ -1,5 +1,6 @@
 import { popularServices } from "@/utils/content";
 import { disclaimers } from "@/utils/content";
+import Link from "next/link"; // <-- Import Link
 
 export default function Footer(): React.ReactElement {
   return (
@@ -10,17 +11,16 @@ export default function Footer(): React.ReactElement {
             <h3 className="mb-4 text-[1rem] text-white-fresh font-semibold">
               Quick Links
             </h3>
-            {/* Exact translation of `footer .quicklinks ul` */}
             <ul className="flex flex-row gap-5">
-              {/* Exact translation of `footer li` */}
+              {/* Wrapped text in Next.js Links */}
               <li className="text-sm text-color-white! cursor-pointer hover:text-red-brand-light! transition-colors">
-                Terms
+                <Link href="/terms">Terms</Link>
               </li>
               <li className="text-sm text-color-white! cursor-pointer hover:text-red-brand-light! transition-colors">
-                Privacy
+                <Link href="/privacy">Privacy</Link>
               </li>
               <li className="text-sm text-color-white! cursor-pointer hover:text-red-brand-light! transition-colors">
-                Contact
+                <Link href="/contact">Contact</Link>
               </li>
             </ul>
           </div>
@@ -44,7 +44,7 @@ export default function Footer(): React.ReactElement {
           </div>
 
           <span className="text-sm text-gray-400 text-center block mt-10">
-            © 2025 Phixl. All rights reserved.
+            © 2026 Phixl AI. All rights reserved.
           </span>
 
           <hr className="border-[#282e3a] my-6" />
@@ -66,47 +66,3 @@ export default function Footer(): React.ReactElement {
     </section>
   );
 }
-
-/*import {popularServices } from "@/utils/content";
-import { disclaimers } from "@/utils/content";
-
-export default function Footer(): React.ReactElement {
-  return (
-    <section>
-      <div className="section-wrapper">
-        <footer>
-          <div className="quicklinks">
-            <h3>Quick Links</h3>
-            <ul>
-              <li>Terms</li>
-              <li>Privacy</li>
-              <li>Contact</li>
-            </ul>
-          </div>
-          <hr />
-          <div className="popular-services">
-            <h3>Popular Services</h3>
-            <ul>
-              {popularServices.map((item) => (
-                <li key={item}>
-                  <p>{item}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <span className="rights">© 2025 Phixl. All rights reserved.</span>
-          <hr />
-          <div className="disclaimer">
-            <ul>
-              {disclaimers.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
-        </footer>
-      </div>
-    </section>
-  );
-}
-*/

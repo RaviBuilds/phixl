@@ -4,6 +4,7 @@ import ImageUpload from "@/components/ImageUpload";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import BuyCreditsButton from "@/components/BuyCreditsButton";
 
 
 export default async function DashboardPage() {    
@@ -16,6 +17,7 @@ export default async function DashboardPage() {
     redirect("/login");
   }
   //  2. Fetch the specific details of the user from our new table
+  
   const {data: profile, error} = await supabase
   .from("profiles")
   .select("*")
@@ -31,7 +33,7 @@ export default async function DashboardPage() {
 
   return (
     <>
-      <div className="flex flex-col gap-8 max-w-5xl mx-auto overflow-hidden">
+      <div className="flex flex-col gap-8 max-w-5xl mx-auto overflow-hidden pt-14 md:pt-0">
         <h1 className="text-3xl font-bold">Restore Image</h1>
 
         {/* The Status Dashboard */}
@@ -72,12 +74,13 @@ export default async function DashboardPage() {
               You don't have sufficient credit to perform this operation.
               Upgrade your plan to continue restoring images.
             </p>
-            <Link
+            <BuyCreditsButton />
+            {/* <Link
               href="/"
               className="bg-red-brand hover:bg-red-brand-light text-color-white-fresh px-8 py-3 rounded-full font-bold transition-all drop-shadow-[0px_0px_1px_#fff]"
             >
               Upgrade Plan
-            </Link>
+            </Link> */}
           </div>
         )}
       </div>

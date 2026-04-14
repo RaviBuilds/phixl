@@ -15,7 +15,6 @@ const supabaseAdmin = createClient(
 );
 
 export async function POST(req: Request) {
-
   // step 1. Get the raw body and signature from the incoming request
 
   const body = await req.text();
@@ -30,6 +29,7 @@ export async function POST(req: Request) {
       signature,
       process.env.STRIPE_WEBHOOK_SECRET as string,
     );
+    
   } catch (error: any) {
     console.error("Webhook verification failed:", error.message);
     return new NextResponse(`Webhook Error : ${error.message}`, {
@@ -41,27 +41,26 @@ export async function POST(req: Request) {
 
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
-
+    
     //Extract the user id we attached in server action
 
     const userId = session.metadata?.userId;
-
-    if(!userId)
-    {
+   
+    if (!userId) {
       console.error("Critical: No UserId found in session metadata");
-      return new NextResponse("Metadata missing", {status:400});
+      return new NextResponse("Metadata missing", { status: 400 });
     }
 
     try {
       // step 4: fetch the user current credits from the profiles table
-      const {data:profile, error:fetchError} = await supabaseAdmin
-      .from("profiles")
-      .select("credits")
-      .eq("id", userId)
-      .single();
+      const { data: profile, error: fetchError } = await supabaseAdmin
+        .from("profiles")
+        .select("credits")
+        .eq("id", userId)
+        .single();
 
-      if(fetchError)
-      {
+     
+      if (fetchError) {
         console.error("Error fetching the profile:", fetchError.message);
         throw new Error("Couldnt fetch the profile");
       }
@@ -71,22 +70,26 @@ export async function POST(req: Request) {
 
       // step 5: update the profile with new credit
 
-      const { error: updateError} = await supabaseAdmin
-      .from("profiles")
-      .update({credits:currentCredits + creditsToAdd})
-      .eq("id", userId);
+      const { error: updateError } = await supabaseAdmin
+        .from("profiles")
+        .update({ credits: currentCredits + creditsToAdd })
+        .eq("id", userId);
 
-      if(updateError)
-      {
-        console.error("Error while updating the credits in profile", updateError.message);
+      if (updateError) {
+        console.error(
+          "Error while updating the credits in profile",
+          updateError.message,
+        );
         throw new Error("Could not update the credits");
       }
-      console.log(`Succesfully added ${creditsToAdd} credits for user ${userId}`);
-    } catch (error:any) {
+      console.log(
+        `Succesfully added ${creditsToAdd} credits for user ${userId}`,
+      );
+    } catch (error: any) {
       console.error(error.message);
-      return new NextResponse("Database Error",{status:500});
+      return new NextResponse("Database Error", { status: 500 });
     }
   }
   // step 6: everything goes good then return 200 OK so stripe knows the Webhook was recieved succesfully
-  return new NextResponse("Webhook Processed Succesfully", {status:200})
+  return new NextResponse("Webhook Processed Succesfully", { status: 200 });
 }

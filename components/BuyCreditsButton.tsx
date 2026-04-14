@@ -3,7 +3,6 @@ import { useState } from "react";
 import { createCheckoutSession } from "@/actions/stripeCheckout";
 import { Loader2 } from "lucide-react";
 
-
 export default function BuyCreditsButton() {
   const [loading, setLoading] = useState<boolean>(false);
   const handleCheckout = async () => {
@@ -13,6 +12,7 @@ export default function BuyCreditsButton() {
       const response = await createCheckoutSession();
       if (response.success && response.url) {
         //redirect the user to secure stripe hosted checkout page
+       
         window.location.href = response.url;
       } else {
         console.error("Checkout Failed", response.error);
@@ -28,7 +28,7 @@ export default function BuyCreditsButton() {
     <button
       disabled={loading}
       onClick={handleCheckout}
-      className="bg-red-brand-light hover:bg-red-brand cursor-pointer text-white px-5 py-3 rounded-xl font-bold w-full md:w-auto flex justify-center items-center transition-colors disabled:opacity-50"
+      className="text-sm bg-red-brand-light hover:bg-red-brand cursor-pointer text-white px-5 py-3 rounded-xl font-bold w-full md:w-auto flex justify-center items-center transition-colors disabled:opacity-50"
     >
       {loading ? (
         <>
