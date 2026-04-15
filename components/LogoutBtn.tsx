@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import logoutAction from "@/actions/logoutAction";
 import { useActionState } from "react";
 
@@ -7,7 +7,6 @@ export default function LogoutBtn() {
     error: null as string | null,
     success: null as string | null,
   });
-
   return (
     <>
       <form action={onLogout}>

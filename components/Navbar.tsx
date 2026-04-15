@@ -17,10 +17,10 @@ interface NavItem {
 }
 
 const navMenuItem: NavItem[] = [
-  { menu: "How it workes", link: "#" },
-  { menu: "Features", link: "#" },
-  { menu: "Pricing", link: "#" },
-  { menu: "FAQ", link: "#" },
+  { menu: "How it workes", link: "/#how-it-works" },
+  { menu: "Features", link: "/#features" },
+  { menu: "Pricing", link: "/#pricing" },
+  { menu: "FAQ", link: "/#faq" },
 ];
 
 export default function Navbar({ user }: NavbarProps): React.ReactElement {
@@ -68,7 +68,7 @@ export default function Navbar({ user }: NavbarProps): React.ReactElement {
 
   return (
     <nav className="bg-black-background border-b! border-gray-text! flex flex-row items-center justify-between px-6! py-3 md:py-5 relative">
-      <div className="flex items-center justify-between w-full md:max-w-[724px] md:mx-auto lg:max-w-full">
+      <div className="flex items-center justify-between w-full max-w-7xl mx-auto">
         <button
           onClick={() => setIsNavActive(!isNavActive)}
           className="md:hidden text-3xl text-color-white z-30 cursor-pointer"
@@ -134,7 +134,7 @@ export default function Navbar({ user }: NavbarProps): React.ReactElement {
                       Dashboard
                     </Link>
                   </li>
-                  <li onClick={() => setIsUserClicked(false)}>
+                  <li>
                     <LogoutBtn />
                   </li>
                 </ul>

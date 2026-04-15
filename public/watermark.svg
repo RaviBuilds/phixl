@@ -1,0 +1,10 @@
+<svg width="800" height="800" xmlns="http://www.w3.org/2000/svg">
+  <g transform="rotate(-35 400 400)">
+    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-weight="900" font-size="140" fill="rgba(255, 255, 255, 0.45)" stroke="rgba(0, 0, 0, 0.2)" stroke-width="3">
+      PHIXL AI
+    </text>
+    <text x="50%" y="62%" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="50" fill="rgba(255, 255, 255, 0.35)" stroke="rgba(0, 0, 0, 0.1)" stroke-width="1">
+      FREE PREVIEW
+    </text>
+  </g>
+</svg>

@@ -1,99 +1,134 @@
 import RedLabel from "@/components/RedLabel";
+import Link from "next/link";
+import { CheckCircle2, XCircle } from "lucide-react";
 
 interface PlanDataTypes {
   id: string;
   planName: string;
-  planAmount?: string;
-  features: { icon: string; info: string }[];
+  planAmount: string;
+  credits: number;
+  features: { included: boolean; info: string }[];
   buttonText: string;
+  isPopular?: boolean;
 }
 
 const plansData: PlanDataTypes[] = [
   {
     id: "plan-1",
-    planName: "Free",
+    planName: "Free Trial",
+    planAmount: "$0.00",
+    credits: 3,
     features: [
-      { icon: "🙂", info: "Medium Quality" },
-      { icon: "😞", info: "Watermarks" },
-      { icon: "⏳", info: "Slow Queue" },
-      { icon: "🔄", info: "3 Free Credits" },
+      { included: true, info: "3 Free Generations" },
+      { included: true, info: "Full AI Restoration Pipeline" },
+      { included: false, info: "Artifact-Free Quality" },
+      { included: false, info: "No Watermarks" },
     ],
-    buttonText: "Start Free",
+    buttonText: "Start Restoring Free",
   },
   {
     id: "plan-2",
-    planName: "Pro",
-    planAmount: "$0.20",
+    planName: "Memory Saver",
+    planAmount: "$2.99",
+    credits: 15,
     features: [
-      { icon: "😍", info: "Excellent Quality" },
-      { icon: "👀", info: "No Watermarks" },
-      { icon: "⚡️", info: "Fast Queue" },
-      { icon: "🎯", info: "Priority Support" },
+      { included: true, info: "15 Premium Generations" },
+      { included: true, info: "Full AI Restoration Pipeline" },
+      { included: true, info: "Artifact-Free Quality" },
+      { included: true, info: "No Watermarks" },
     ],
-    buttonText: "Go Pro",
+    buttonText: "Get 15 Credits",
   },
   {
     id: "plan-3",
-    planName: "API",
-    planAmount: "$0.10",
+    planName: "The Archive",
+    planAmount: "$7.99",
+    credits: 50,
+    isPopular: true,
     features: [
-      { icon: "😍", info: "Excellent Quality" },
-      { icon: "👀", info: "No Watermarks" },
-      { icon: "⚡️", info: "Fast Queue" },
-      { icon: "💰", info: "Cheapest Option" },
+      { included: true, info: "50 Premium Generations" },
+      { included: true, info: "Full AI Restoration Pipeline" },
+      { included: true, info: "Artifact-Free Quality" },
+      { included: true, info: "No Watermarks" },
     ],
-    buttonText: "Get API Access",
+    buttonText: "Get 50 Credits",
   },
 ];
+
 export default function Plans(): React.ReactElement {
   return (
-    <section>
-      <div className="px-6 max-w-full py-15 md:py-25 md:max-w-[724px] md:mx-auto lg:max-w-full">
-        <div className="mb-8! md:max-w-[600px]! block mx-auto!">
+    <section id="pricing">
+      <div className="px-6 max-w-full py-15 md:py-25 md:max-w-[724px] md:mx-auto lg:max-w-6xl">
+        <div className="mb-12! md:max-w-[600px]! block mx-auto!">
           <div className="w-full flex items-center justify-center">
-            <RedLabel>💳 Simple Pricing</RedLabel>
+            <RedLabel>💳 Transparent Pricing</RedLabel>
           </div>
-          <h2 className="text-center text-4xl font-bold mb-4 md:text-5xl text-color-white-fresh ">
-            Choose Your Plan
+          <h2 className="text-center text-3xl font-bold mb-4 md:text-5xl text-color-white-fresh mt-4 leading-tight">
+            Preserve Your Memories
           </h2>
-          <p className="text-center text-lg text-color-gray">
-            No hidden fees. No subscriptions.
-            <br /> Pay only for what you use.
+          <p className="text-center text-lg text-gray-400">
+            No subscriptions. No hidden fees. <br className="hidden md:block" />{" "}
+            Simply purchase the credits you need.
           </p>
         </div>
-        <div className="grid w-[90%] mx-auto grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-8 mt-20 relative">
+
+        {/* Changed grid to force 3 columns on large screens for perfect alignment */}
+        <div className="grid w-full mx-auto grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10 relative">
           {plansData.map((plan) => (
             <div
               className={`${
-                plan.planName === "Pro"
-                  ? "bg-gradient-to-br from-[#ff009928] to-[#ff009915] border border-[#ff009946] rounded-2xl py-7 px-6 transition-all duration-300 ease-linear relative before:content-['Most_Popular'] before:absolute before:bg-color-white-fresh before:px-[12px] before:py-[5px] before:text-red-brand before:text-[0.8rem] before:font-[800] before:rounded-[1rem] before:top-0 before:-translate-y-1/2 before:right-4 hover:scale-105"
-                  : "bg-[#1F293780] border border-gray-text rounded-2xl py-7 px-6 transition-all duration-300 ease-linear hover:scale-105"
-              }`}
+                plan.isPopular
+                  ? "bg-gradient-to-br from-[#ff009928] to-[#ff009905] border-2 border-red-brand/50 rounded-3xl py-8 px-6 transition-all duration-300 ease-linear relative md:-translate-y-4 hover:-translate-y-6 shadow-[0_0_30px_#ff009920]"
+                  : "bg-[#11182780] border border-gray-800 rounded-3xl py-8 px-6 transition-all duration-300 ease-linear hover:-translate-y-2"
+              } flex flex-col h-full`}
               key={plan.id}
             >
-              <h5 className="text-3xl font-bold pb-2 text-color-white-fresh">
+              {/* Popular Badge */}
+              {plan.isPopular && (
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-red-brand to-pink-500 text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg">
+                  Best Value
+                </div>
+              )}
+
+              <h5 className="text-xl font-bold text-gray-400 uppercase tracking-wider mb-2">
                 {plan.planName}
               </h5>
-              <h3 className="text-2xl font-semibold pb-5 text-color-white">
-                {plan.planAmount ? plan.planAmount : plan.planName}
-                <span>{plan.planAmount ? " per image" : ""}</span>
-              </h3>
-              <ul className="flex flex-col items-start justify-start gap-4">
+
+              <div className="flex items-baseline gap-1 mb-8">
+                <h3 className="text-5xl font-extrabold text-color-white-fresh">
+                  {plan.planAmount}
+                </h3>
+                <span className="text-gray-400 font-medium">one-time</span>
+              </div>
+
+              {/* Flex-1 ensures the button is always pushed to the bottom even if content varies */}
+              <ul className="flex flex-col items-start justify-start gap-5 flex-1 mb-8">
                 {plan.features.map((feature) => (
                   <li
                     key={`${feature.info}-${plan.id}`}
-                    className="text-color-white text-[1rem]"
+                    className={`flex items-start gap-3 text-[1.05rem] ${feature.included ? "text-white" : "text-gray-500"}`}
                   >
-                    <span className="text-xl mr-3">{feature.icon}</span>
-                    {feature.info}
+                    {feature.included ? (
+                      <CheckCircle2 className="w-6 h-6 text-green-400 shrink-0" />
+                    ) : (
+                      <XCircle className="w-6 h-6 text-gray-600 shrink-0" />
+                    )}
+                    <span className="leading-tight pt-0.5">{feature.info}</span>
                   </li>
                 ))}
               </ul>
-              <button
-                className={`${plan.planName === "Pro" ? "bg-red-brand text-color-white hover:bg-color-white-fresh hover:text-red-brand" : "bg-color-gray text-color-white hover:bg-gray-500"} mt-6 block w-full text-center transition-all duration-300 ease-linear   rounded-full py-3 text-[1rem] font-bold cursor-pointer`}
-              >
-                {plan.buttonText}
-              </button>
+
+              <Link href="/login" className="w-full mt-auto">
+                <button
+                  className={`${
+                    plan.isPopular
+                      ? "bg-red-brand text-color-white-fresh hover:bg-white hover:text-red-brand shadow-lg"
+                      : "bg-gray-800 text-color-white-fresh hover:bg-gray-700"
+                  } block w-full text-center transition-all duration-300 ease-linear rounded-full py-3.5 text-[1.05rem] font-bold cursor-pointer`}
+                >
+                  {plan.buttonText}
+                </button>
+              </Link>
             </div>
           ))}
         </div>
