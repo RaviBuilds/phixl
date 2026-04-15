@@ -43,9 +43,10 @@ export default function ImageReveal({ img1, img2 }: ImageRevealProps) {
         >
           <Image
             src={img1}
+            priority={true}
             alt="Original faded and damaged photo"
             fill
-            priority={true}
+            
             className="object-cover pointer-events-none"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 640px"
           />
