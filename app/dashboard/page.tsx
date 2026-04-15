@@ -1,11 +1,18 @@
-"use server"
+
 
 import ImageUpload from "@/components/ImageUpload";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import BuyCreditsButton from "@/components/BuyCreditsButton";
+import type { Metadata } from "next";
 
+export const metadata: Metadata = {
+  title: "Dashboard",
+  description:
+    "Upload and restore your damaged photos using our advanced AI pipeline.",
+  robots: { index: false, follow: false },
+};
 
 export default async function DashboardPage() {    
   const supabase = await createClient();

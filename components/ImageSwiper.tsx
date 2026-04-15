@@ -28,16 +28,52 @@ export default function ImageSwiper() {
       className="mySwiper"
     >
       <SwiperSlide>
-        <Image src={oldImg1} alt="OldImage to convert" placeholder="blur" />
+        <div className="relative w-full h-full">
+          <Image
+            src={oldImg1}
+            alt="Historical family photo before and after restoration"
+            placeholder="blur"
+            fill
+            sizes="(max-width: 768px) 100vw, 400px"
+            className="object-cover"
+          />
+        </div>
       </SwiperSlide>
       <SwiperSlide>
-        <Image src={oldImg2} alt="OldImage to convert" placeholder="blur" />
+        <div className="relative w-full h-full">
+          <Image
+            src={oldImg2}
+            alt="Historical family photo before and after restoration"
+            placeholder="blur"
+            fill
+            sizes="(max-width: 768px) 100vw, 400px"
+            className="object-cover"
+          />
+        </div>
       </SwiperSlide>
       <SwiperSlide>
-        <Image src={oldImg3} alt="OldImage to convert" placeholder="blur" />
+        <div className="relative w-full h-full">
+          <Image
+            src={oldImg3}
+            alt="Historical family photo before and after restoration"
+            placeholder="blur"
+            fill
+            sizes="(max-width: 768px) 100vw, 400px"
+            className="object-cover"
+          />
+        </div>
       </SwiperSlide>
       <SwiperSlide>
-        <Image src={oldImg4} alt="OldImage to convert" placeholder="blur" />
+        <div className="relative w-full h-full">
+          <Image
+            src={oldImg4}
+            alt="Historical family photo before and after restoration"
+            placeholder="blur"
+            fill
+            sizes="(max-width: 768px) 100vw, 400px"
+            className="object-cover"
+          />
+        </div>
       </SwiperSlide>
     </Swiper>
   );

@@ -1,3 +1,11 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Terms of Service",
+  description:
+    "Read the terms and conditions for using Phixl AI's historical photo restoration services.",
+};
+
 export default function TermsPage() {
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-gray-300 py-20 px-6">

@@ -1,3 +1,11 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy",
+  description:
+    "Learn how Phixl AI protects your personal information. We guarantee 100% privacy and never train public AI models on your memories.",
+};
+
 export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-gray-300 py-20 px-6">

@@ -12,9 +12,37 @@ const quicksand = Quicksand({
   variable: "--font-quicksand",
 });
 
+
+
 export const metadata: Metadata = {
-  title: "Phixl AI | Restore Old Photos",
-  description: "Restore your old images with Phixl AI",
+  metadataBase: new URL("https://www.phixl.online"), // Replace with your actual production URL
+  title: {
+    default: "Phixl AI | Historical Photo Restoration",
+    template: "%s | Phixl AI", // Automatically formats child pages like "Login | Phixl AI"
+  },
+  description:
+    "Preserving your family history with ethical, artifact-free AI restoration.",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://www.phixl.online",
+    siteName: "Phixl AI",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Phixl AI - Family Photo Restoration",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Phixl AI | Historical Photo Restoration",
+    description:
+      "Preserving your family history with ethical, artifact-free AI.",
+    images: ["/og-image.png"],
+  },
 };
 
 export default async function RootLayout({

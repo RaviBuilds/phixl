@@ -1,10 +1,17 @@
-"use server";
+
 
 import GalleryCard from "@/components/GalleryCard";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { ImageIcon } from "lucide-react"; // Import an icon for the empty state
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "My Gallery",
+  description: "View and download your securely restored photos.",
+  robots: { index: false, follow: false },
+};
 
 export default async function Gallery() {
   const supabase = await createClient();

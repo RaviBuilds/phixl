@@ -1,5 +1,13 @@
 import { Mail, MapPin, MessageSquare } from "lucide-react";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Contact Us",
+  description:
+    "Get in touch with the Phixl AI team for support, billing questions, or feedback.",
+};
+
 export default function ContactPage() {
   return (
     <div className="min-h-screen bg-[#0a0a0a] py-20 px-6">

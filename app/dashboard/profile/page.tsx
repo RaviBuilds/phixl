@@ -1,3 +1,5 @@
+
+
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import BuyCreditsButton from "@/components/BuyCreditsButton";
@@ -11,6 +13,15 @@ import {
   Download,
   Calendar,
 } from "lucide-react";
+import type { Metadata } from "next";
+import DownloadInvoiceBtn from "@/components/DownloadInvoiceBtn";
+
+export const metadata: Metadata = {
+  title: "Profile & Billing",
+  description:
+    "Manage your account details, view transaction history, and purchase credits.",
+  robots: { index: false, follow: false },
+};
 
 export default async function ProfilePage() {
   const supabase = await createClient();
@@ -201,11 +212,11 @@ export default async function ProfilePage() {
                       </span>
                     </td>
                     <td className="py-4 text-right pr-4">
-                      {/* For now, this is a visual button. You can link this to a real PDF generation route later */}
-                      <button className="inline-flex items-center gap-2 text-sm font-medium text-gray-400 hover:text-white bg-[#0a0a0a] border border-gray-700 hover:border-gray-500 px-3 py-1.5 rounded-lg transition-all">
-                        <Download className="w-4 h-4" />
-                        <span className="hidden sm:inline">Download</span>
-                      </button>
+                      <DownloadInvoiceBtn
+                        transaction={tx}
+                        userEmail={userEmail}
+                        fullName={fullName}
+                      />
                     </td>
                   </tr>
                 ))}

@@ -1,85 +1,79 @@
+import Link from "next/link";
 import img1 from "@/public/img1.jpg";
 import img2 from "@/public/img2.jpg";
 import RedBtn from "@/components/RedBtn";
 import ImageReveal from "@/components/ImageReveal";
 import { ArrowSvg } from "@/components/Icon";
-import { RocketSVG } from "@/components/Icon";
-import { DownArrow } from "@/components/Icon";
 import RedLabel from "@/components/RedLabel";
-interface cardHeaderData {
+
+interface TrustCardData {
   card_icon: string;
   card_title: string;
   card_subtitle: string;
 }
 
-type cardHeaderType = cardHeaderData[];
-
 export default function Banner(): React.ReactElement {
-  const cardHeader: cardHeaderType = [
+  const trustRibbon: TrustCardData[] = [
     {
-      card_icon: "👥",
-      card_title: "+ 10K",
-      card_subtitle: "Users",
+      card_icon: "🔒",
+      card_title: "100% Private",
+      card_subtitle: "Encrypted & Auto-Deleted",
     },
     {
-      card_icon: "🖼️",
-      card_title: "+ 450K",
-      card_subtitle: "Images",
+      card_icon: "✨",
+      card_title: "Artifact-Free",
+      card_subtitle: "Respects Original Faces",
     },
     {
-      card_icon: "⚡",
-      card_title: "99.9%",
-      card_subtitle: "Uptime",
+      card_icon: "🎨",
+      card_title: "True Colors",
+      card_subtitle: "Historically Accurate AI",
     },
   ];
 
   return (
-    <section className="flex flex-col items-center bg-black-background py-12! gap-2 md:grid md:grid-cols-[70%_30%] md:grid-rows-[auto_auto] md:px-0! md:max-w-[724px] md:mx-auto! lg:grid-cols-2 lg:bg-transparent lg:max-w-full lg:px-6!">
-      <div className="text-center max-w-[600px] md:max-w-[100%] md:text-start px-6! md:px-0!">
-        <RedLabel>✨ AI-Powered Technology</RedLabel>
-        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-6! text-color-white-fresh font-bold">
-          Restore images with
+    <section className="w-full max-w-7xl mx-auto px-6 py-12 md:py-20 flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+      
+      {/* LEFT COLUMN: Emotional Copy & CTA */}
+      <div className="w-full lg:w-[55%] text-center lg:text-left flex flex-col items-center lg:items-start">
+        <div className="flex">
+        <RedLabel>Historical AI Preservation</RedLabel>
+        </div>
+        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4.2rem] mt-4 mb-6 text-color-white-fresh font-bold leading-[1.1]">
+          Bring Your Family History{" "}
           <span className="bg-gradient-to-r from-red-brand to-color-white-fresh bg-clip-text text-transparent">
-            Phixl AI
+            Back to Life
           </span>
         </h1>
-        <p className="text-gray-300 font-light mb-6! text-lg">
-          Experience the future of restore images with our advanced restore AI
-          technology.
-        </p>
-        <div className="flex flex-col gap-5! md:flex-row items-center justify-center md:items-start md:justify-between">
-          <div className="flex flex-col gap-2 w-full">
-            <RedBtn svgComponent=<ArrowSvg /> outlineBtn={false}>
-              Restore Now
+        
+        <h2 className="text-gray-300 font-light mb-8 text-lg md:text-xl leading-relaxed max-w-2xl">
+          Seamlessly repair tears, remove scratches, and vividly colorize faded black-and-white photos with artifact-free AI. Your memories, perfectly preserved.
+        </h2>
+        
+        <div className="flex flex-col gap-4 items-center lg:items-start w-full">
+          <Link href="/login" className="w-full sm:w-auto">
+            <RedBtn svgComponent={<ArrowSvg />} outlineBtn={false}>
+              Restore Your First Photo Free
             </RedBtn>
-
-            <span className="text-sm pt-2! text-gray-400">
-              ✨ 3 free images included
-            </span>
-          </div>
-
-          <div className="flex flex-col gap-2 w-full">
-            <RedBtn svgComponent=<RocketSVG /> outlineBtn={true}>
-              View Plans
-            </RedBtn>
-          </div>
-          <div className="flex flex-col gap-2 w-full">
-            <RedBtn svgComponent=<DownArrow /> outlineBtn={true}>
-              Learn More
-            </RedBtn>
-          </div>
+          </Link>
+          
+          <span className="text-sm pt-2 text-gray-400 font-medium flex items-center justify-center lg:justify-start gap-2">
+             <span className="text-green-400">✓</span> 100% Authentic Results. Originals never stored.
+          </span>
         </div>
-        <div className="hidden lg:block  mt-10! pb-10! lg:grid grid-cols-3 grid-rows-1 gap-6 w-full mt-3!  md:pb-0!">
-          {cardHeader.map((card) => (
+
+        {/* DESKTOP TRUST RIBBON - Sleeker and pushed further down */}
+        <div className="hidden lg:grid mt-24 grid-cols-3 gap-4 w-full pr-4">
+          {trustRibbon.map((card) => (
             <div
-              className="bg-blue-low-200 border border-solid border-gray-text flex flex-col rounded-2xl items-center justify-center gap-1 py-3! lg:py-4! hover:bg-[radial-gradient(circle_at_50%_50%,_#ff009911,_#9b89b333)] transition-all duration-300"
+              className="bg-[#0b0f19] border border-gray-800 flex flex-col rounded-xl items-center justify-center gap-1 py-3 px-3 text-center hover:border-red-brand/50 transition-all duration-300 shadow-sm"
               key={card.card_title}
             >
-              <div className="text-2xl">{card.card_icon}</div>
-              <h5 className="text-xl font-bold text-color-white-fresh">
+              <div className="text-xl mb-1">{card.card_icon}</div>
+              <h3 className="text-sm font-bold text-color-white-fresh">
                 {card.card_title}
-              </h5>
-              <span className="block text-gray-400 font-normal text-sm">
+              </h3>
+              <span className="block text-gray-400 font-normal text-[0.7rem] leading-tight">
                 {card.card_subtitle}
               </span>
             </div>
@@ -87,19 +81,23 @@ export default function Banner(): React.ReactElement {
         </div>
       </div>
 
-      <ImageReveal img1={img1} img2={img2} />
+      {/* RIGHT COLUMN: Visual Proof Slider */}
+      <div className="w-full lg:w-[45%] flex justify-center lg:justify-end">
+        <ImageReveal img1={img1} img2={img2} />
+      </div>
 
-      <div className="lg:hidden bg-gradient-to-b from-[#050a14] to-[#ff009915] mt-10! pb-10! grid grid-cols-1 grid-rows-3 gap-6 w-full px-6! md:mt-3! md:bg-none md:grid-cols-3 md:grid-rows-1 md:pb-0!;">
-        {cardHeader.map((card) => (
+      {/* MOBILE TRUST RIBBON - Sleeker and pushed further down */}
+      <div className="lg:hidden w-full grid grid-cols-1 sm:grid-cols-3 gap-3 mt-12">
+        {trustRibbon.map((card) => (
           <div
-            className="bg-blue-low-200 border border-solid border-gray-text flex flex-col rounded-2xl items-center justify-center gap-1 py-3! lg:py-4! hover:bg-[radial-gradient(circle_at_50%_50%,_#ff009911,_#9b89b333)] transition-all duration-300"
+            className="bg-[#0b0f19] border border-gray-800 flex flex-col rounded-xl items-center justify-center gap-1 py-3 px-3 hover:border-red-brand/50 transition-all duration-300 shadow-sm"
             key={card.card_title}
           >
-            <div className="text-2xl">{card.card_icon}</div>
-            <h5 className="text-xl font-bold color-white-fresh">
+            <div className="text-xl mb-1">{card.card_icon}</div>
+            <h3 className="text-sm font-bold text-color-white-fresh">
               {card.card_title}
-            </h5>
-            <span className="block text-gray-400 font-normal text-sm">
+            </h3>
+            <span className="block text-gray-400 font-normal text-xs">
               {card.card_subtitle}
             </span>
           </div>
