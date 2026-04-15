@@ -90,9 +90,9 @@ export default function Plans(): React.ReactElement {
                 </div>
               )}
 
-              <h5 className="text-xl font-bold text-gray-400 uppercase tracking-wider mb-2">
+              <h3 className="text-xl font-bold text-gray-400 uppercase tracking-wider mb-2">
                 {plan.planName}
-              </h5>
+              </h3>
 
               <div className="flex items-baseline gap-1 mb-8">
                 <h3 className="text-5xl font-extrabold text-color-white-fresh">
@@ -106,12 +106,12 @@ export default function Plans(): React.ReactElement {
                 {plan.features.map((feature) => (
                   <li
                     key={`${feature.info}-${plan.id}`}
-                    className={`flex items-start gap-3 text-[1.05rem] ${feature.included ? "text-white" : "text-gray-500"}`}
+                    className={`flex items-start gap-3 text-[1.05rem] ${feature.included ? "text-white" : "text-gray-400"}`}
                   >
                     {feature.included ? (
                       <CheckCircle2 className="w-6 h-6 text-green-400 shrink-0" />
                     ) : (
-                      <XCircle className="w-6 h-6 text-gray-600 shrink-0" />
+                      <XCircle className="w-6 h-6 text-gray-400 shrink-0" />
                     )}
                     <span className="leading-tight pt-0.5">{feature.info}</span>
                   </li>

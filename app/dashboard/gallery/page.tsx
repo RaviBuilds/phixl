@@ -1,5 +1,3 @@
-
-
 import GalleryCard from "@/components/GalleryCard";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
@@ -84,7 +82,7 @@ export default async function Gallery() {
                   imagePath={item.image_url}
                 />
 
-                <div className="px-1 text-xs font-medium text-gray-500 flex justify-between items-center">
+                <div className="px-1 text-xs font-medium text-gray-400 flex justify-between items-center">
                   <span>{new Date(item.created_at).toLocaleDateString()}</span>
                   <span className="uppercase tracking-wider">AI Restored</span>
                 </div>

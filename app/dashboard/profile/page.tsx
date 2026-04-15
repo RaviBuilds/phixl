@@ -1,5 +1,3 @@
-
-
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import BuyCreditsButton from "@/components/BuyCreditsButton";
@@ -105,7 +103,7 @@ export default async function ProfilePage() {
               <div className="bg-[#0a0a0a] border border-gray-800 rounded-xl p-3 text-white opacity-70 cursor-not-allowed">
                 {userEmail}
               </div>
-              <p className="text-xs text-gray-500 mt-2">
+              <p className="text-xs text-gray-400 mt-2">
                 Email is tied to your Google Auth provider and cannot be changed
                 here.
               </p>
@@ -165,9 +163,9 @@ export default async function ProfilePage() {
 
         {!transactions || transactions.length === 0 ? (
           <div className="text-center py-12 bg-[#0a0a0a] rounded-xl border border-gray-800 border-dashed">
-            <Receipt className="w-10 h-10 text-gray-600 mx-auto mb-3" />
+            <Receipt className="w-10 h-10 text-gray-400 mx-auto mb-3" />
             <p className="text-gray-400 font-medium">No transactions found</p>
-            <p className="text-gray-500 text-sm mt-1">
+            <p className="text-gray-400 text-sm mt-1">
               When you purchase credits, your receipts will appear here.
             </p>
           </div>
@@ -191,7 +189,7 @@ export default async function ProfilePage() {
                   >
                     <td className="py-4 pl-4">
                       <div className="flex items-center gap-2 text-white">
-                        <Calendar className="w-4 h-4 text-gray-500" />
+                        <Calendar className="w-4 h-4 text-gray-400" />
                         {new Date(tx.created_at).toLocaleDateString("en-US", {
                           month: "short",
                           day: "numeric",

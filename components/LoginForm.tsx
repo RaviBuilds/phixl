@@ -11,25 +11,23 @@ export default function LoginForm() {
   const [state, formAction, isPending] = useActionState(loginAction, {
     error: null as string | null,
   });
- const [isGoogleLoading, setIsGoogleLoading]= useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
- const supabase = createClient();
+  const supabase = createClient();
 
- const handleGoogleAuth = async()=>{
-
-  setIsGoogleLoading(true);
-  const {error} = await supabase.auth.signInWithOAuth({
-    provider:"google",
-    options:{
-      redirectTo:`${window.location.origin}/api/auth/callback`
-    },
-  });
-  if(error)
-  {
-    console.error("Google Auth Error", error.message);
-    setIsGoogleLoading(false);
-  }
- }
+  const handleGoogleAuth = async () => {
+    setIsGoogleLoading(true);
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/api/auth/callback`,
+      },
+    });
+    if (error) {
+      console.error("Google Auth Error", error.message);
+      setIsGoogleLoading(false);
+    }
+  };
 
   return (
     <div className="bg-[#050a14] w-full h-screen relative flex items-start pt-7 justify-center text-white">
@@ -78,7 +76,7 @@ export default function LoginForm() {
               >
                 {isPending ? "Submitting" : "Login"}
               </button>
-              <span className="block mt-2 underline text-gray-500 text-sm font-bold hover:text-gray-300 cursor-pointer">
+              <span className="block mt-2 underline text-gray-400 text-sm font-bold hover:text-gray-300 cursor-pointer">
                 Forgot your password?
               </span>
             </div>
@@ -120,7 +118,7 @@ export default function LoginForm() {
 
         <Link
           href="/"
-          className="mt-6 font-normal text-gray-500 underline cursor-pointer"
+          className="mt-6 font-normal text-gray-400 underline cursor-pointer"
         >
           Back to HomePage
         </Link>

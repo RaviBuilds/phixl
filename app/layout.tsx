@@ -16,7 +16,7 @@ const quicksand = Quicksand({
 
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.phixl.online"), // Replace with your actual production URL
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://www.phixl.online"), // Replace with your actual production URL
   title: {
     default: "Phixl AI | Historical Photo Restoration",
     template: "%s | Phixl AI", // Automatically formats child pages like "Login | Phixl AI"

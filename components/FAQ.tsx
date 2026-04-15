@@ -84,7 +84,7 @@ export default function FAQ(): React.ReactElement {
                     >
                       <ChevronDown
                         className={`w-5 h-5 transition-transform duration-300 shrink-0 ${
-                          isOpen ? "rotate-180 text-red-brand" : "text-gray-500"
+                          isOpen ? "rotate-180 text-red-brand" : "text-gray-400"
                         }`}
                       />
                     </div>

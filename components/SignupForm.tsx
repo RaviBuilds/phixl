@@ -147,7 +147,7 @@ export default function SignupForm() {
                 {isPending ? "Processing" : "Signup"}
               </button>
 
-              <span className="block mt-2 underline text-gray-500 text-sm font-bold hover:text-gray-300 cursor-pointer">
+              <span className="block mt-2 underline text-gray-400 text-sm font-bold hover:text-gray-300 cursor-pointer">
                 <Link href="/login">Already have an account?</Link>
               </span>
             </div>
@@ -181,7 +181,7 @@ export default function SignupForm() {
         {/* Back Link */}
         <Link
           href="/"
-          className="mt-6 font-normal text-gray-500 underline cursor-pointer"
+          className="mt-6 font-normal text-gray-400 underline cursor-pointer"
         >
           Back to HomePage
         </Link>

@@ -130,7 +130,7 @@ export default function Footer(): React.ReactElement {
             {disclaimers.map((item) => (
               <p
                 key={item}
-                className="text-[0.75rem] text-gray-600 leading-tight"
+                className="text-[0.75rem] text-gray-400 leading-tight"
               >
                 {item}
               </p>
@@ -138,7 +138,7 @@ export default function Footer(): React.ReactElement {
           </div>
 
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 mt-4">
-            <span className="text-sm text-gray-500 font-medium">
+            <span className="text-sm text-gray-400 font-medium">
               © {new Date().getFullYear()} Phixl AI. All rights reserved.
             </span>
           </div>
