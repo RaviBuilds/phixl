@@ -5,13 +5,16 @@
     --color-red-brand: #ff0099;
     --color-red-brand-light: #ff4ab7;
     --color-black-background: #050a14;
-    --color-gray-text: #2a2a2b;
+    
+    /* 🚨 UPGRADED GRAYS FOR LIGHTHOUSE 100/100 CONTAST 🚨 */
+    --color-gray-text: #9ca3af;       /* Was #2a2a2b. Now perfectly matches Tailwind gray-400 */
+    --color-color-gray: #9ca3af;      /* Was #6d6d6d. Bumped up to ensure >4.5:1 contrast */
+    --color-color-white-low: #cbd5e1; /* Was #b3b3b3. Bumped up slightly for crispness */
+    
     --color-color-white: #e5e7eb;
     --color-color-white-fresh:#fafafa;
-    --color-color-white-low:#b3b3b3;
-    --color-color-gray:#6d6d6d;
     --color-blue-low-200:#1f293780;
-     --shadow-custom: 2px 4px 10px #ff009965;
+    --shadow-custom: 2px 4px 10px #ff009965;
 }
 
 body {

@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -72,7 +71,10 @@ export default function Navbar({ user }: NavbarProps): React.ReactElement {
         <button
           onClick={() => setIsNavActive(!isNavActive)}
           className="md:hidden text-3xl text-color-white z-30 cursor-pointer"
-        >
+          aria-label={
+            isNavActive ? "Close navigation menu" : "Open navigation menu"
+          }
+          aria-expanded={isNavActive}>
           {isNavActive ? "X" : "☰"}
         </button>
 

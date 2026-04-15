@@ -29,9 +29,9 @@ export default function ImageReveal({ img1, img2 }: ImageRevealProps) {
           src={img2}
           alt="Fully restored family photo"
           fill
-          priority
+          priority={true}
           className="object-cover pointer-events-none"
-          sizes="(max-width: 768px) 100vw, 640px"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 640px"
         />
 
         {/* Foreground Image: Original */}
@@ -45,9 +45,9 @@ export default function ImageReveal({ img1, img2 }: ImageRevealProps) {
             src={img1}
             alt="Original faded and damaged photo"
             fill
-            priority
+            priority={true}
             className="object-cover pointer-events-none"
-            sizes="(max-width: 768px) 100vw, 640px"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 640px"
           />
         </div>
 
