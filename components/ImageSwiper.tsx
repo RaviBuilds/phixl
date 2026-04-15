@@ -34,6 +34,7 @@ export default function ImageSwiper() {
             alt="Historical family photo before and after restoration"
             placeholder="blur"
             fill
+            priority={true}
             sizes="(max-width: 768px) 100vw, 400px"
             className="object-cover"
           />
@@ -46,6 +47,7 @@ export default function ImageSwiper() {
             alt="Historical family photo before and after restoration"
             placeholder="blur"
             fill
+            
             sizes="(max-width: 768px) 100vw, 400px"
             className="object-cover"
           />
@@ -58,6 +60,7 @@ export default function ImageSwiper() {
             alt="Historical family photo before and after restoration"
             placeholder="blur"
             fill
+            
             sizes="(max-width: 768px) 100vw, 400px"
             className="object-cover"
           />
@@ -70,6 +73,7 @@ export default function ImageSwiper() {
             alt="Historical family photo before and after restoration"
             placeholder="blur"
             fill
+           
             sizes="(max-width: 768px) 100vw, 400px"
             className="object-cover"
           />

@@ -177,6 +177,7 @@ export default function ImageUpload() {
               alt="Preview"
               fill
               className="object-contain"
+              priority={true}
             />
             <button
               onClick={clearFile}

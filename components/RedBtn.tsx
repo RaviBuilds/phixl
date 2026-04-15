@@ -10,7 +10,7 @@ export default function RedBtn({ children, svgComponent, outlineBtn, ...props }:
   const btnCSS = `group flex flex-row text-color-white-fresh items-center justify-center w-full px-1! py-3! rounded-full cursor-pointer lg:px-4!  hover:shadow-custom transition-shadow duration-300`;
 
   const btnOutlineCSS = `border border-solid border-color-gray`;
-  const btnFilledCSS = `bg-red-brand-light`;
+  const btnFilledCSS = `bg-red-brand hover:bg-[#a30062]`;
 
   console.log("CHILDREN = ", children);
   return (

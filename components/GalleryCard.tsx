@@ -53,7 +53,7 @@ export default function GalleryCard({
               alt="Zoomed Restored Image"
               fill
               className="object-contain"
-              priority
+             
             />
           </div>
         </div>
@@ -64,6 +64,7 @@ export default function GalleryCard({
           src={publicUrl}
           alt="Restored"
           fill
+          
           className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
 

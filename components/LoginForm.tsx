@@ -100,6 +100,7 @@ export default function LoginForm() {
                   alt="google"
                   placeholder="blur"
                   className="w-7"
+                  
                 />
                 <span className="text-sm">Google</span>
               </>
