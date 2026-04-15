@@ -25,10 +25,10 @@ export default function ImageSwiper() {
         clickable: true,
       }}
       modules={[EffectFade, Navigation, Pagination, Autoplay]}
-      className="mySwiper"
+      className="mySwiper w-full h-full"
     >
       <SwiperSlide>
-        <div className="relative w-full h-full">
+        <div className="relative w-full h-[400px] md:h-[500px]">
           <Image
             src={oldImg1}
             alt="Historical family photo before and after restoration"
@@ -40,7 +40,7 @@ export default function ImageSwiper() {
         </div>
       </SwiperSlide>
       <SwiperSlide>
-        <div className="relative w-full h-full">
+        <div className="relative w-full h-[400px] md:h-[500px]">
           <Image
             src={oldImg2}
             alt="Historical family photo before and after restoration"
@@ -52,7 +52,7 @@ export default function ImageSwiper() {
         </div>
       </SwiperSlide>
       <SwiperSlide>
-        <div className="relative w-full h-full">
+        <div className="relative w-full h-[400px] md:h-[500px]">
           <Image
             src={oldImg3}
             alt="Historical family photo before and after restoration"
@@ -64,7 +64,7 @@ export default function ImageSwiper() {
         </div>
       </SwiperSlide>
       <SwiperSlide>
-        <div className="relative w-full h-full">
+        <div className="relative w-full h-[400px] md:h-[500px]">
           <Image
             src={oldImg4}
             alt="Historical family photo before and after restoration"

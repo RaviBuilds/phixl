@@ -1,17 +1,18 @@
-"use client"; // <-- Add this line right here!
+"use client";
 
 import RedBtn from "@/components/RedBtn";
 import { ArrowSvg } from "@/components/Icon";
 import Link from "next/link";
-import dynamic from "next/dynamic";
+import ImageSwiper from "./ImageSwiper"; 
 
-const ImageSwiper = dynamic(() => import("./ImageSwiper"), {
-  ssr: false, 
-  loading: () => (
-    <div className="w-full h-full bg-[#0a0a0a] animate-pulse rounded-2xl"></div>
-  ),
-});
 
+interface StepData {
+  id: string;
+  value: number;
+  icon: string;
+  iconInfo: string;
+  description: string;
+}
 
 interface StepData {
   id: string;
