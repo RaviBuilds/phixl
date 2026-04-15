@@ -81,7 +81,7 @@ export default function HowItWorks(): React.ReactElement {
           </div>
 
           {/* RIGHT SIDE: Slider */}
-          <div className="relative w-full sm:w-[80%] md:w-[50%] aspect-[4/5] md:aspect-auto md:h-[500px] mx-auto rounded-2xl overflow-hidden md:max-w-[20rem] lg:max-w-[25rem] drop-shadow-[0px_0px_30px_#ff009930] border-4 border-[#1a1a24]">
+          <div className="relative w-full sm:w-[80%] md:w-[50%] aspect-[4/5] md:aspect-auto min-h-[400px] md:min-h-[500px] mx-auto rounded-2xl overflow-hidden md:max-w-[20rem] lg:max-w-[25rem] shadow-[0_0_30px_#ff009930] border-4 border-[#1a1a24]">
             <ImageSwiper />
           </div>
         </div>

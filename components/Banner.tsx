@@ -32,12 +32,11 @@ export default function Banner(): React.ReactElement {
   ];
 
   return (
-    <section className="w-full max-w-7xl mx-auto px-6 py-12 md:py-20 flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
-      
+    <section className="w-full max-w-7xl mx-auto px-6 py-12 md:py-12 flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
       {/* LEFT COLUMN: Emotional Copy & CTA */}
       <div className="w-full lg:w-[55%] text-center lg:text-left flex flex-col items-center lg:items-start">
         <div className="flex">
-        <RedLabel>Historical AI Preservation</RedLabel>
+          <RedLabel>Historical AI Preservation</RedLabel>
         </div>
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4.2rem] mt-4 mb-6 text-color-white-fresh font-bold leading-[1.1]">
           Bring Your Family History{" "}
@@ -45,20 +44,23 @@ export default function Banner(): React.ReactElement {
             Back to Life
           </span>
         </h1>
-        
+
         <h2 className="text-gray-300 font-light mb-8 text-lg md:text-xl leading-relaxed max-w-2xl">
-          Seamlessly repair tears, remove scratches, and vividly colorize faded black-and-white photos with artifact-free AI. Your memories, perfectly preserved.
+          Seamlessly repair tears, remove scratches, and vividly colorize faded
+          black-and-white photos with artifact-free AI. Your memories, perfectly
+          preserved.
         </h2>
-        
+
         <div className="flex flex-col gap-4 items-center lg:items-start w-full">
           <Link href="/login" className="w-full sm:w-auto">
             <RedBtn svgComponent={<ArrowSvg />} outlineBtn={false}>
               Restore Your First Photo Free
             </RedBtn>
           </Link>
-          
+
           <span className="text-sm pt-2 text-gray-400 font-medium flex items-center justify-center lg:justify-start gap-2">
-             <span className="text-green-400">✓</span> 100% Authentic Results. Originals never stored.
+            <span className="text-green-400">✓</span> 100% Authentic Results.
+            Originals never stored.
           </span>
         </div>
 
@@ -82,7 +84,7 @@ export default function Banner(): React.ReactElement {
       </div>
 
       {/* RIGHT COLUMN: Visual Proof Slider */}
-      <div className="w-full lg:w-[45%] flex justify-center lg:justify-end">
+      <div className="w-full lg:w-[45%] flex justify-center lg:justify-end aspect-square min-h-[350px] md:min-h-[450px]">
         <ImageReveal img1={img1} img2={img2} />
       </div>
 
