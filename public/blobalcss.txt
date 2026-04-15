@@ -407,7 +407,7 @@ footer .quicklinks ul {
 }
 
 footer li {
-    @apply text-sm text-gray-500 cursor-pointer;
+    @apply text-sm text-gray-400 cursor-pointer;
 }
 
 footer .popular-services ul {

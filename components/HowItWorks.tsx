@@ -1,7 +1,14 @@
-import ImageSwiper from "@/components/ImageSwiper";
+// import ImageSwiper from "@/components/ImageSwiper";
 import RedBtn from "@/components/RedBtn";
 import { ArrowSvg } from "@/components/Icon";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+const ImageSwiper = dynamic(() => import("./ImageSwiper"), {
+  ssr: false, // Prevents server-side rendering blocking for the swiper
+  loading: () => (
+    <div className="w-full h-full bg-[#0a0a0a] animate-pulse rounded-2xl"></div>
+  ),
+});
 
 interface StepData {
   id: string;
