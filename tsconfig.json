@@ -29,7 +29,9 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "app/login/page.tsx",
-    "app/login/page.tsx.bak"
+    "app/login/page.tsx.bak",
+    "actions/stripeCheckout.ts.bak",
+    "app/api/webhook/stripe/route.ts.bak"
   ],
   "exclude": ["node_modules"]
 }

@@ -4,6 +4,8 @@
 import { createClient } from "@/utils/supabase/server";
 import Replicate from "replicate";
 import { revalidatePath } from "next/cache";
+import sharp from "sharp";
+import path from "path";
 
 const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN,
@@ -19,15 +21,17 @@ export async function initializePipeline(imagePath: string) {
   } = await supabase.auth.getUser();
   if (!user) throw new Error("Unauthorized");
 
+  // FIX 1: We must select both 'credits' AND 'plan_name' here!
   const { data: profile } = await supabase
     .from("profiles")
-    .select("credits")
+    .select("credits, plan_name")
     .eq("id", user.id)
     .single();
+
   if (!profile || profile.credits <= 0)
     throw new Error("Insufficient credits.");
 
-  // Deduct credit upfront (we will refund it if the AI fails)
+  // Deduct credit upfront
   await supabase
     .from("profiles")
     .update({ credits: profile.credits - 1 })
@@ -37,17 +41,21 @@ export async function initializePipeline(imagePath: string) {
     .from("restoration_images")
     .getPublicUrl(imagePath);
 
-  return { success: true, imageUrl: publicUrlData.publicUrl, userId: user.id };
+  return {
+    success: true,
+    imageUrl: publicUrlData.publicUrl,
+    userId: user.id,
+    isPro: profile.plan_name?.toUpperCase() === "PRO", // Safely check plan
+  };
 }
 
 // ============================================================================
-// STEP 2: Start an AI Model (Takes 0.5 seconds - Bypasses Vercel Timeout!)
+// STEP 2: Start an AI Model
 // ============================================================================
 export async function startAIPrediction(modelEndpoint: string, inputData: any) {
   try {
-    // .create starts the job in the background and instantly returns an ID
     const prediction = await replicate.predictions.create({
-      // @ts-ignore - Replicate types can be finicky with string literals
+      // @ts-ignore
       version: modelEndpoint.split(":")[1],
       input: inputData,
     });
@@ -74,30 +82,43 @@ export async function checkPredictionStatus(predictionId: string) {
 }
 
 // ============================================================================
-// STEP 4: Finalize & Save to Gallery
+// STEP 4: Finalize, Watermark & Save
 // ============================================================================
 export async function finalizeRestoration(
   finalReplicateUrl: string,
   userId: string,
+  isPro: boolean,
 ) {
   try {
     const supabase = await createClient();
 
     // Download image from Replicate
     const response = await fetch(finalReplicateUrl);
-    const imageBuffer = await response.arrayBuffer();
+    const arrayBuffer = await response.arrayBuffer();
+
+    // FIX: Explicitly declare the type as a standard Node Buffer
+    // and cast the web ArrayBuffer so TypeScript stops complaining.
+    let imageBuffer: Buffer = Buffer.from(arrayBuffer as ArrayBuffer);
+    // Apply Watermark if they are on the FREE plan
+    if (!isPro) {
+      // Pointing to our new SVG file!
+      const watermarkPath = path.join(process.cwd(), "public", "watermark.svg");
+
+      imageBuffer = await sharp(imageBuffer)
+        .composite([{ input: watermarkPath, gravity: "center" }])
+        .png()
+        .toBuffer();
+    }
 
     const fileName = `restored-${Date.now()}.png`;
     const filePath = `${userId}/${fileName}`;
 
-    // Upload to Supabase Storage
     const { error: uploadError } = await supabase.storage
       .from("restored_images")
       .upload(filePath, imageBuffer, { contentType: "image/png" });
 
     if (uploadError) throw new Error("Failed to upload to storage");
 
-    // Save to Gallery DB
     await supabase
       .from("restorations")
       .insert({ user_id: userId, image_url: filePath });
