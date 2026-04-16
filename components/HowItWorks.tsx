@@ -3,8 +3,15 @@
 import RedBtn from "@/components/RedBtn";
 import { ArrowSvg } from "@/components/Icon";
 import Link from "next/link";
-import ImageSwiper from "./ImageSwiper"; 
+import dynamic from "next/dynamic";
 
+const ImageSwiper = dynamic(() => import("./ImageSwiper"), {
+  ssr: false,
+  // The skeleton loader ensures the space is held while the JS downloads
+  loading: () => (
+    <div className="w-full h-full bg-[#1a1a24] animate-pulse rounded-2xl"></div>
+  ),
+});
 
 interface StepData {
   id: string;
