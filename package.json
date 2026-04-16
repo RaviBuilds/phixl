@@ -2,6 +2,12 @@
   "name": "phixl-ai",
   "version": "0.1.0",
   "private": true,
+  "browserslist": [
+    "defaults",
+    "not IE 11",
+    "not dead",
+    "> 0.5%"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",

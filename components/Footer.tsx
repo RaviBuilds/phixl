@@ -116,6 +116,15 @@ export default function Footer(): React.ReactElement {
                   Do Not Sell My Personal Information
                 </Link>
               </li>
+              <li>
+                {/* Mandatory CCPA Link */}
+                <Link
+                  href="/refund-policy"
+                  className="text-sm text-gray-400 hover:text-red-brand-light transition-colors"
+                >
+                  Refund Policy
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

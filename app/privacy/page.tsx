@@ -16,36 +16,46 @@ export default function PrivacyPage() {
         <div className="space-y-8">
           <section>
             <h2 className="text-2xl font-semibold text-white mb-4">
-              Data Collection
+              1. Data Collection & Purpose
             </h2>
             <p className="leading-relaxed">
-              When you use Phixl AI, we collect your email address for
-              authentication and billing purposes via Google OAuth. We also
-              securely store the images you explicitly upload for restoration.
+              When you use Phixl AI, we collect essential data required to
+              provide our service: your email address (via Google OAuth) for
+              account authentication, billing identifiers, and the specific
+              photos you upload for restoration. We do not collect or track
+              unnecessary personal data.
             </p>
           </section>
 
           <section>
             <h2 className="text-2xl font-semibold text-white mb-4">
-              Image Processing & AI
+              2. Image Processing, Storage & AI Training
             </h2>
             <p className="leading-relaxed">
-              Your images are processed securely using third-party AI APIs (such
-              as Replicate). We strictly ensure that your personal family photos
-              are <strong>never</strong> used to train public AI models.
-              Uploaded and restored images are stored in secure cloud buckets
-              and can be deleted from your dashboard at any time.
+              Your privacy is our highest priority. Uploaded images are
+              temporarily stored securely on our Supabase cloud infrastructure
+              and processed via our AI partners (such as Replicate).
+              <br />
+              <br />
+              <strong>
+                We strictly guarantee that your personal family photos are NEVER
+                used to train public or private AI models.
+              </strong>{" "}
+              You have full control over your data and can delete your uploaded
+              and restored images permanently from your dashboard at any time.
             </p>
           </section>
 
           <section>
             <h2 className="text-2xl font-semibold text-white mb-4">
-              Payment Information
+              3. Payment Information & Third Parties
             </h2>
             <p className="leading-relaxed">
               All financial transactions are handled securely through our
-              payment processors (Stripe/Razorpay). Phixl AI does not directly
-              store your credit card details on our servers.
+              PCI-compliant payment processor, <strong>Razorpay</strong>. Phixl
+              AI does not directly collect, process, or store your credit card
+              numbers, bank details, or sensitive financial information on our
+              servers.
             </p>
           </section>
         </div>
