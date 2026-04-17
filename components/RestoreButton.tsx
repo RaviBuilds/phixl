@@ -34,149 +34,151 @@ export default function RestoreButton({
   const [isProcessing, setIsProcessing] = useState(false);
   const [loadingText, setLoadingText] = useState("");
 
-const handleRestore = async () => {
-  setIsProcessing(true);
-  onError("");
+  const handleRestore = async () => {
+    setIsProcessing(true);
+    onError("");
 
-  // --- NEW: Bulletproof Auto-Retry Helper ---
-  const executeWithRetry = async (modelUrl: string, input: any) => {
-    let attempts = 0;
-    while (attempts < 3) {
-      const pred = await startAIPrediction(modelUrl, input);
-      if (pred.success && pred.predictionId) return pred;
+    // --- NEW: Bulletproof Auto-Retry Helper ---
+    const executeWithRetry = async (modelUrl: string, input: any) => {
+      let attempts = 0;
+      while (attempts < 3) {
+        const pred = await startAIPrediction(modelUrl, input);
+        if (pred.success && pred.predictionId) return pred;
 
-      // If we hit the Free Tier 429 limit, catch it and wait!
-      if (pred.error?.includes("429")) {
-        setLoadingText("Free tier limit hit. Auto-retrying in 8s...");
-        await sleep(8500); // Wait 8.5 seconds for the Replicate clock to reset
-        attempts++;
-      } else {
-        // If it's a real error (like the Microsoft model crashing), throw it
-        throw new Error(pred.error || "Failed to start AI phase");
+        // If we hit the Free Tier 429 limit, catch it and wait!
+        if (pred.error?.includes("429")) {
+          setLoadingText("Free tier limit hit. Auto-retrying in 8s...");
+          await sleep(8500); // Wait 8.5 seconds for the Replicate clock to reset
+          attempts++;
+        } else {
+          // If it's a real error (like the Microsoft model crashing), throw it
+          throw new Error(pred.error || "Failed to start AI phase");
+        }
       }
-    }
-    throw new Error("API is too busy. Please try again in 1 minute.");
-  };
+      throw new Error("API is too busy. Please try again in 1 minute.");
+    };
 
-  try {
-    const supabase = createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) throw new Error("User not authenticated.");
+    try {
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) throw new Error("User not authenticated.");
 
-    setLoadingText("Uploading secure original...");
-    const fileExt = file.name.split(".").pop();
-    const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
-    const filePath = `${user.id}/${fileName}`;
+      setLoadingText("Uploading secure original...");
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = `${user.id}/${fileName}`;
 
-    const { data: uploadData, error: uploadError } = await supabase.storage
-      .from("restoration_images")
-      .upload(filePath, file);
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from("restoration_images")
+        .upload(filePath, file);
 
-    if (uploadError) throw new Error("Failed to upload image.");
+      if (uploadError) throw new Error("Failed to upload image.");
 
-    setLoadingText("Initializing pipeline...");
-    const init = await initializePipeline(uploadData.path);
-    let currentImageUrl = init.imageUrl;
+      setLoadingText("Initializing pipeline...");
+      const init = await initializePipeline(uploadData.path);
+      let currentImageUrl = init.imageUrl;
 
-    // ==========================================
-    // PHASE 1: SCRATCH REMOVAL
-    // ==========================================
-    setLoadingText("Phase 1: Healing scratches & tears...");
-    // Using the new retry wrapper!
-    let prediction = await executeWithRetry(SCRATCH_MODEL, {
-      image: currentImageUrl,
-      HR: true,
-      with_scratch: true,
-    });
+      // ==========================================
+      // PHASE 1: SCRATCH REMOVAL
+      // ==========================================
+      setLoadingText("Phase 1: Healing scratches & tears...");
+      // Using the new retry wrapper!
+      let prediction = await executeWithRetry(SCRATCH_MODEL, {
+        image: currentImageUrl,
+        HR: true,
+        with_scratch: true,
+      });
 
-    let status = "processing";
-    while (status !== "succeeded" && status !== "failed") {
-      await sleep(2500);
-      const check = await checkPredictionStatus(prediction.predictionId);
-      if (!check.success || !check.status)
-        throw new Error(check.error || "Failed to check status");
-      status = check.status;
-      if (status === "succeeded") currentImageUrl = check.output as string;
-    }
-    if (status === "failed")
-      throw new Error(
-        "Scratch removal failed. The image might be too complex for this specific model.",
+      let status = "processing";
+      while (status !== "succeeded" && status !== "failed") {
+        await sleep(2500);
+        const check = await checkPredictionStatus(prediction.predictionId);
+        if (!check.success || !check.status)
+          throw new Error(check.error || "Failed to check status");
+        status = check.status;
+        if (status === "succeeded") currentImageUrl = check.output as string;
+      }
+      if (status === "failed")
+        throw new Error(
+          "Scratch removal failed. The image might be too complex for this specific model.",
+        );
+
+      setLoadingText("Cooling down AI engine....");
+      await sleep(4000);
+
+      // ==========================================
+      // PHASE 2: COLORIZATION
+      // ==========================================
+      setLoadingText("Phase 2: Applying historical color...");
+      prediction = await executeWithRetry(COLOR_MODEL, {
+        image: currentImageUrl,
+      });
+
+      status = "processing";
+      while (status !== "succeeded" && status !== "failed") {
+        await sleep(2500);
+        const check = await checkPredictionStatus(prediction.predictionId);
+        if (!check.success || !check.status)
+          throw new Error(check.error || "Failed to check status");
+        status = check.status;
+        if (status === "succeeded") currentImageUrl = check.output as string;
+      }
+      if (status === "failed") throw new Error("Colorization failed.");
+
+      setLoadingText("Preparing final upscaler...");
+      await sleep(4000);
+
+      // ==========================================
+      // PHASE 3: FACE UPSCALING (CODEFORMER)
+      // ==========================================
+      setLoadingText("Phase 3: Reconstructing faces...");
+      prediction = await executeWithRetry(FACE_MODEL, {
+        image: currentImageUrl,
+        upscale: 2,
+        face_upsample: true,
+        background_enhance: true,
+        codeformer_fidelity: 0.5,
+      });
+
+      status = "processing";
+      while (status !== "succeeded" && status !== "failed") {
+        await sleep(2500);
+        const check = await checkPredictionStatus(prediction.predictionId);
+        if (!check.success || !check.status)
+          throw new Error(check.error || "Failed to check status");
+        status = check.status;
+        if (status === "succeeded") currentImageUrl = check.output as string;
+      }
+      if (status === "failed") throw new Error("Face upscaling failed.");
+
+      setLoadingText("Saving masterpiece...");
+      console.log("init=>", init);
+      console.log("init.isPro", init.isPro);
+      const finalResult = await finalizeRestoration(
+        currentImageUrl,
+        init.userId,
+        init.isPro!,
       );
 
-    setLoadingText("Cooling down AI engine....");
-    await sleep(4000);
+      if (!finalResult.success || !finalResult.finalUrl) {
+        throw new Error(finalResult.error || "Failed to finalize restoration.");
+      }
 
-    // ==========================================
-    // PHASE 2: COLORIZATION
-    // ==========================================
-    setLoadingText("Phase 2: Applying historical color...");
-    prediction = await executeWithRetry(COLOR_MODEL, {
-      image: currentImageUrl,
-    });
+      onSuccess(finalResult.finalUrl);
+    } catch (error: any) {
+      console.error("Pipeline Error:", error);
+      onError(error.message || "Failed to process image.");
 
-    status = "processing";
-    while (status !== "succeeded" && status !== "failed") {
-      await sleep(2500);
-      const check = await checkPredictionStatus(prediction.predictionId);
-      if (!check.success || !check.status)
-        throw new Error(check.error || "Failed to check status");
-      status = check.status;
-      if (status === "succeeded") currentImageUrl = check.output as string;
+      if (loadingText.includes("Phase")) {
+        await refundCredit();
+      }
+    } finally {
+      setIsProcessing(false);
+      setLoadingText("");
     }
-    if (status === "failed") throw new Error("Colorization failed.");
-
-    setLoadingText("Preparing final upscaler...");
-    await sleep(4000);
-
-    // ==========================================
-    // PHASE 3: FACE UPSCALING (CODEFORMER)
-    // ==========================================
-    setLoadingText("Phase 3: Reconstructing faces...");
-    prediction = await executeWithRetry(FACE_MODEL, {
-      image: currentImageUrl,
-      upscale: 2,
-      face_upsample: true,
-      background_enhance: true,
-      codeformer_fidelity: 0.5,
-    });
-
-    status = "processing";
-    while (status !== "succeeded" && status !== "failed") {
-      await sleep(2500);
-      const check = await checkPredictionStatus(prediction.predictionId);
-      if (!check.success || !check.status)
-        throw new Error(check.error || "Failed to check status");
-      status = check.status;
-      if (status === "succeeded") currentImageUrl = check.output as string;
-    }
-    if (status === "failed") throw new Error("Face upscaling failed.");
-
-    setLoadingText("Saving masterpiece...");
-    const finalResult = await finalizeRestoration(
-      currentImageUrl,
-      init.userId,
-      init.isPro!,
-    );
-
-    if (!finalResult.success || !finalResult.finalUrl) {
-      throw new Error(finalResult.error || "Failed to finalize restoration.");
-    }
-
-    onSuccess(finalResult.finalUrl);
-  } catch (error: any) {
-    console.error("Pipeline Error:", error);
-    onError(error.message || "Failed to process image.");
-
-    if (loadingText.includes("Phase")) {
-      await refundCredit();
-    }
-  } finally {
-    setIsProcessing(false);
-    setLoadingText("");
-  }
-};
+  };
 
   return (
     <button

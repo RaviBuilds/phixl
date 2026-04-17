@@ -95,17 +95,33 @@ export async function finalizeRestoration(
     // Download image from Replicate
     const response = await fetch(finalReplicateUrl);
     const arrayBuffer = await response.arrayBuffer();
-
-    // FIX: Explicitly declare the type as a standard Node Buffer
-    // and cast the web ArrayBuffer so TypeScript stops complaining.
+    
     let imageBuffer: Buffer = Buffer.from(arrayBuffer as ArrayBuffer);
+
     // Apply Watermark if they are on the FREE plan
     if (!isPro) {
-      // Pointing to our new SVG file!
       const watermarkPath = path.join(process.cwd(), "public", "watermark.svg");
 
+      // 1. Get the exact dimensions of the massive AI-upscaled image
+      const imageMetadata = await sharp(imageBuffer).metadata();
+      const baseWidth = imageMetadata.width || 2048;
+
+      // 2. Calculate the target size (e.g., make watermark 50% of the total image width)
+      const watermarkWidth = Math.floor(baseWidth * 0.5);
+
+      // 3. Pre-process the SVG: rasterize and scale it up BEFORE stamping
+      const properlySizedWatermark = await sharp(watermarkPath)
+        .resize({ width: watermarkWidth })
+        .toBuffer();
+
+      // 4. Composite the properly sized watermark
       imageBuffer = await sharp(imageBuffer)
-        .composite([{ input: watermarkPath, gravity: "center" }])
+        .composite([
+          { 
+            input: properlySizedWatermark, 
+            gravity: "center" // Change to "southeast" if you want it in the bottom right corner!
+          }
+        ])
         .png()
         .toBuffer();
     }
@@ -133,6 +149,7 @@ export async function finalizeRestoration(
     return { success: false, error: error.message };
   }
 }
+
 
 // ============================================================================
 // EMERGENCY REFUND

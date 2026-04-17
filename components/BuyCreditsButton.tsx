@@ -83,7 +83,7 @@ export default function BuyCreditsButton() {
       {loading ? (
         <>
           <Loader2 className="animate-spin mr-2" size={20} />
-          Redirecting to Stripe...
+          Loading Secure Checkout...
         </>
       ) : (
         "Buy 15 credits for $2.99"

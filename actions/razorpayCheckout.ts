@@ -28,7 +28,7 @@ export async function createRazorPayOrder(){
 
         const options: OptionsType = {
           amount: 299,
-          currency: "INR",
+          currency: "USD",
           receipt: `receipt_${Date.now()}`,
           notes: {
             userId: user.id,
