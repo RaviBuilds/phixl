@@ -23,7 +23,8 @@ export const metadata: Metadata = {
   },
   description:
     "Preserving your family history with ethical, artifact-free AI restoration.",
-
+  
+  keywords: ["photo restoration", "AI photo repair", "historical photos", "fix old photos"],
   // ---> NEW: Icons Configuration <---
   icons: {
     icon: [
