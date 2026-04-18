@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { createClient } from "@/utils/supabase/server";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 // configure the font weight
 const quicksand = Quicksand({
@@ -76,6 +77,7 @@ export default async function RootLayout({
         {children}
         <Footer />
       </body>
+      <GoogleAnalytics gaId="G-3TSK31Y119" />
     </html>
   );
 }
