@@ -76,8 +76,8 @@ export default async function RootLayout({
         <Navbar user={user} />
         {children}
         <Footer />
+        <GoogleAnalytics gaId="G-3TSK31Y119" />
       </body>
-      <GoogleAnalytics gaId="G-3TSK31Y119" />
     </html>
   );
 }
