@@ -50,13 +50,19 @@ export async function initializePipeline(imagePath: string) {
 }
 
 // ============================================================================
-// STEP 2: Start an AI Model
+// STEP 2: Start an AI Model (supports both model identifier and version hash)
 // ============================================================================
 export async function startAIPrediction(modelEndpoint: string, inputData: any) {
   try {
+    // If it contains a ":" it's the old format "owner/name:versionhash"
+    // Otherwise it's the new format "owner/name" (uses latest version automatically)
+    const hasVersion = modelEndpoint.includes(":");
+    
     const prediction = await replicate.predictions.create({
-      // @ts-ignore
-      version: modelEndpoint.split(":")[1],
+      ...(hasVersion 
+        ? { version: modelEndpoint.split(":")[1] }
+        : { model: modelEndpoint as `${string}/${string}` }
+      ),
       input: inputData,
     });
     return { success: true, predictionId: prediction.id };
@@ -98,20 +104,27 @@ export async function finalizeRestoration(
     
     let imageBuffer: Buffer = Buffer.from(arrayBuffer as ArrayBuffer);
 
+    // Ensure final output is high-quality PNG with maximum detail preservation
+    // Normalize to PNG format with optimal compression (lossless)
+    imageBuffer = await sharp(imageBuffer)
+      .png({ quality: 100, compressionLevel: 6 })
+      .toBuffer();
+
     // Apply Watermark if they are on the FREE plan
     if (!isPro) {
       const watermarkPath = path.join(process.cwd(), "public", "watermark.svg");
 
-      // 1. Get the exact dimensions of the massive AI-upscaled image
+      // 1. Get the exact dimensions of the AI-upscaled image
       const imageMetadata = await sharp(imageBuffer).metadata();
       const baseWidth = imageMetadata.width || 2048;
 
-      // 2. Calculate the target size (e.g., make watermark 50% of the total image width)
+      // 2. Calculate the target size (watermark 50% of image width)
       const watermarkWidth = Math.floor(baseWidth * 0.5);
 
       // 3. Pre-process the SVG: rasterize and scale it up BEFORE stamping
       const properlySizedWatermark = await sharp(watermarkPath)
         .resize({ width: watermarkWidth })
+        .png({ quality: 100 })
         .toBuffer();
 
       // 4. Composite the properly sized watermark
@@ -119,10 +132,10 @@ export async function finalizeRestoration(
         .composite([
           { 
             input: properlySizedWatermark, 
-            gravity: "center" // Change to "southeast" if you want it in the bottom right corner!
+            gravity: "center"
           }
         ])
-        .png()
+        .png({ quality: 100, compressionLevel: 6 })
         .toBuffer();
     }
 
