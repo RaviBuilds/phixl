@@ -1,15 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
-import RedLabel from "@/components/RedLabel";
+import { useState } from "react";
 import { ChevronDown } from "lucide-react";
+import SectionHeading from "@/components/ui/SectionHeading";
+import { cn } from "@/utils/cn";
 
 interface FaqTypes {
   question: string;
   answer: string;
 }
 
-// CRO UPDATE: Dismantling user fears (Privacy, Physical Damage, Subscriptions, Scanning Quality)
 const faqs: FaqTypes[] = [
   {
     question: "Will this process damage my original physical photograph?",
@@ -39,74 +39,80 @@ const faqs: FaqTypes[] = [
 ];
 
 export default function FAQ(): React.ReactElement {
-  // State to track which accordion item is open
-  const [openIndex, setOpenIndex] = useState<number | null>(0); // Default to first item open
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   const handleToggle = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
   return (
-    <section id="faq" className="bg-[#050a14]">
-      <div className="px-6 max-w-full py-15 md:py-25 md:max-w-[724px] md:mx-auto lg:max-w-3xl">
-        <div className="mb-12">
-          <div className="w-full flex items-center justify-center mb-4">
-            <RedLabel>Common Questions</RedLabel>
-          </div>
-          <h2 className="text-center text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-color-white-fresh leading-tight">
-            Everything You Need to Know
-          </h2>
-          <p className="text-center text-lg text-gray-400">
-            Clear answers to ensure your family history is in safe hands.
-          </p>
-        </div>
+    <section id="faq" className="relative w-full px-6 py-24 md:py-32">
+      <div className="mx-auto w-full max-w-3xl">
+        <SectionHeading
+          eyebrow="Common Questions"
+          title="Everything You Need to Know"
+          subtitle="Clear answers to ensure your family history is in safe hands."
+          className="mb-16"
+        />
 
-        <div className="mt-8 max-w-full mx-auto">
-          <ul className="flex flex-col gap-4">
-            {faqs.map((faq, index) => {
-              const isOpen = openIndex === index;
+        <ul className="flex flex-col gap-4">
+          {faqs.map((faq, index) => {
+            const isOpen = openIndex === index;
 
-              return (
-                <li key={faq.question} className="w-full">
+            return (
+              <li key={faq.question}>
+                <div
+                  className={cn(
+                    "glass overflow-hidden rounded-xl transition-all duration-300",
+                    isOpen
+                      ? "border-brand-pink/30 bg-white/[0.05]"
+                      : "hover:border-white/20",
+                  )}
+                >
                   <button
                     onClick={() => handleToggle(index)}
-                    className={`w-full flex items-center justify-between border border-gray-800 rounded-2xl p-6 text-left transition-all duration-300 focus:outline-none ${
-                      isOpen
-                        ? "bg-[#1f293790] border-red-brand/30"
-                        : "bg-[#11182780] hover:bg-[#1f293780]"
-                    }`}
+                    aria-expanded={isOpen}
+                    className="flex w-full items-center justify-between gap-4 p-6 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-pink/50"
                   >
-                    <h3 className="text-[1.1rem] font-bold text-color-white-fresh pr-4">
+                    <h3 className="text-[1.1rem] font-semibold text-ink">
                       {faq.question}
                     </h3>
-                    <div
-                      className={`p-2 rounded-full transition-colors duration-300 ${isOpen ? "bg-red-brand/10" : "bg-transparent"}`}
+                    <span
+                      className={cn(
+                        "flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-colors duration-300",
+                        isOpen ? "bg-brand-pink/15" : "bg-white/5",
+                      )}
                     >
                       <ChevronDown
-                        className={`w-5 h-5 transition-transform duration-300 shrink-0 ${
-                          isOpen ? "rotate-180 text-red-brand" : "text-gray-400"
-                        }`}
+                        className={cn(
+                          "h-5 w-5 transition-transform duration-300",
+                          isOpen
+                            ? "rotate-180 text-brand-rose"
+                            : "text-ink-subtle",
+                        )}
                       />
-                    </div>
+                    </span>
                   </button>
 
-                  {/* Smooth Accordion Reveal */}
                   <div
-                    className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                    className={cn(
+                      "grid transition-all duration-300 ease-in-out",
                       isOpen
-                        ? "max-h-[500px] opacity-100 mt-2 px-6 pb-6"
-                        : "max-h-0 opacity-0 px-6"
-                    }`}
+                        ? "grid-rows-[1fr] opacity-100"
+                        : "grid-rows-[0fr] opacity-0",
+                    )}
                   >
-                    <p className="text-gray-400 leading-relaxed text-[1rem] pt-2">
-                      {faq.answer}
-                    </p>
+                    <div className="overflow-hidden">
+                      <p className="px-6 pb-6 leading-relaxed text-neutral-200">
+                        {faq.answer}
+                      </p>
+                    </div>
                   </div>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
       </div>
     </section>
   );

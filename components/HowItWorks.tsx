@@ -1,15 +1,18 @@
 "use client";
 
-import RedBtn from "@/components/RedBtn";
-import { ArrowSvg } from "@/components/Icon";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import Button from "@/components/ui/Button";
+import GlassCard from "@/components/ui/GlassCard";
+import SectionHeading from "@/components/ui/SectionHeading";
+import AmbientGlow from "@/components/ui/AmbientGlow";
+import { ArrowSvg } from "@/components/Icon";
 
 const ImageSwiper = dynamic(() => import("./ImageSwiper"), {
   ssr: false,
-  // The skeleton loader ensures the space is held while the JS downloads
+  // Skeleton holds the space while the JS downloads — no layout shift.
   loading: () => (
-    <div className="w-full h-full bg-[#1a1a24] animate-pulse rounded-2xl"></div>
+    <div className="h-full w-full animate-pulse rounded-2xl bg-surface-2" />
   ),
 });
 
@@ -21,15 +24,6 @@ interface StepData {
   description: string;
 }
 
-interface StepData {
-  id: string;
-  value: number;
-  icon: string;
-  iconInfo: string;
-  description: string;
-}
-
-// CRO UPDATE: Shifting copy from "Tech Tool" to "Historical Preservation"
 const HowItWorksData: StepData[] = [
   {
     id: "step-1",
@@ -59,56 +53,55 @@ const HowItWorksData: StepData[] = [
 
 export default function HowItWorks(): React.ReactElement {
   return (
-    <section id="how-it-works">
-      <div className="px-6 max-w-full py-15! md:py-25! md:max-w-[724px] md:mx-auto! lg:max-w-full! text-color-white-fresh">
-        <div className="mb-12!">
-          <h2 className="text-center text-3xl md:text-4xl font-bold mb-4!">
-            How It Works
-          </h2>
-          <p className="text-center text-lg text-color-gray max-w-2xl mx-auto">
-            Restore your family archives in 3 simple, secure steps.
-          </p>
-        </div>
+    <section id="how-it-works" className="relative w-full px-6 py-24 md:py-32">
+      <div className="mx-auto w-full max-w-7xl">
+        <SectionHeading
+          eyebrow="Simple & Secure"
+          title="How It Works"
+          subtitle="Restore your family archives in 3 simple, secure steps."
+          className="mb-16"
+        />
 
-        <div className="grid grid-cols-1 grid-rows-[auto_auto] w-full relative gap-10 lg:gap-16 md:max-w-fit md:flex md:flex-row md:items-center md:justify-center md:mx-auto">
-          {/* LEFT SIDE: The 3 Steps */}
-          <div className="flex flex-col items-start justify-center w-full h-full md:justify-end md:items-end md:max-w-fit">
-            <div className="grid grid-cols-1 w-full grid-rows-[auto_auto_auto] gap-5 md:max-w-fit">
-              {HowItWorksData.map((data) => (
-                <div
-                  className="px-5 py-5 w-full bg-[#1F293780] border border-gray-800 hover:border-red-brand/40 transition-colors duration-300 rounded-2xl flex items-start justify-start gap-5 shadow-lg"
-                  key={data.id}
+        <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
+          {/* LEFT: The 3 steps */}
+          <ol className="flex flex-col gap-5">
+            {HowItWorksData.map((data) => (
+              <li key={data.id}>
+                <GlassCard
+                  interactive
+                  className="flex items-start gap-5 p-6"
                 >
-                  <div className="h-10 w-10 min-w-[40px] bg-[#ff00991c] border border-[#ff009965] text-[#ff0099] rounded-full flex items-center justify-center text-[1rem] font-bold mt-1">
+                  <div className="mt-0.5 flex h-10 w-10 min-w-10 items-center justify-center rounded-full border border-brand-pink/40 bg-brand-pink/10 text-base font-semibold text-brand-rose">
                     {data.value}
                   </div>
-                  <div className="flex flex-col items-start justify-center gap-1">
-                    <div className="flex flex-row items-center justify-start gap-2">
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2">
                       <span className="text-lg">{data.icon}</span>
-                      <span className="text-color-white-fresh font-bold text-lg">
+                      <h3 className="text-lg font-semibold text-ink">
                         {data.iconInfo}
-                      </span>
+                      </h3>
                     </div>
-                    <p className="text-gray-400 text-sm leading-relaxed mt-1">
+                    <p className="mt-1 text-sm leading-relaxed text-neutral-200">
                       {data.description}
                     </p>
                   </div>
-                </div>
-              ))}
-            </div>
-          </div>
+                </GlassCard>
+              </li>
+            ))}
+          </ol>
 
-          {/* RIGHT SIDE: Slider */}
-          <div className="relative w-full sm:w-[80%] md:w-[50%] aspect-[4/5] md:aspect-auto min-h-[400px] md:min-h-[500px] mx-auto rounded-2xl overflow-hidden md:max-w-[20rem] lg:max-w-[25rem] shadow-[0_0_30px_#ff009930] border-4 border-[#1a1a24]">
-            <ImageSwiper />
+          {/* RIGHT: Slider, framed with an ambient glow behind it */}
+          <div className="relative mx-auto w-full max-w-md">
+            <AmbientGlow className="inset-0 m-auto h-full w-full opacity-60" />
+            <div className="relative aspect-[4/5] min-h-[400px] overflow-hidden rounded-2xl border border-white/10 bg-surface-1 shadow-2xl md:min-h-[500px]">
+              <ImageSwiper />
+            </div>
           </div>
         </div>
 
-        <div className="mx-auto! w-fit mt-16!">
+        <div className="mx-auto mt-16 w-fit">
           <Link href="/login">
-            <RedBtn svgComponent={<ArrowSvg />} outlineBtn={false}>
-              Restore Your First Photo Free
-            </RedBtn>
+            <Button icon={<ArrowSvg />}>Restore Your First Photo Free</Button>
           </Link>
         </div>
       </div>

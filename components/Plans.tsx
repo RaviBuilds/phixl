@@ -1,6 +1,10 @@
-import RedLabel from "@/components/RedLabel";
 import Link from "next/link";
 import { CheckCircle2, XCircle } from "lucide-react";
+import SectionHeading from "@/components/ui/SectionHeading";
+import GlassCard from "@/components/ui/GlassCard";
+import Button from "@/components/ui/Button";
+import AmbientGlow from "@/components/ui/AmbientGlow";
+import { cn } from "@/utils/cn";
 
 interface PlanDataTypes {
   id: string;
@@ -57,78 +61,82 @@ const plansData: PlanDataTypes[] = [
 
 export default function Plans(): React.ReactElement {
   return (
-    <section id="pricing">
-      <div className="px-6 max-w-full py-15 md:py-25 md:max-w-[724px] md:mx-auto lg:max-w-6xl">
-        <div className="mb-12! md:max-w-[600px]! block mx-auto!">
-          <div className="w-full flex items-center justify-center">
-            <RedLabel>💳 Transparent Pricing</RedLabel>
-          </div>
-          <h2 className="text-center text-3xl font-bold mb-4 md:text-5xl text-color-white-fresh mt-4 leading-tight">
-            Preserve Your Memories
-          </h2>
-          <p className="text-center text-lg text-gray-400">
-            No subscriptions. No hidden fees. <br className="hidden md:block" />{" "}
-            Simply purchase the credits you need.
-          </p>
-        </div>
+    <section id="pricing" className="relative w-full px-6 py-24 md:py-32">
+      <div className="mx-auto w-full max-w-6xl">
+        <SectionHeading
+          eyebrow="Transparent Pricing"
+          title="Preserve Your Memories"
+          subtitle="No subscriptions. No hidden fees. Simply purchase the credits you need."
+          className="mb-16"
+        />
 
-        {/* Changed grid to force 3 columns on large screens for perfect alignment */}
-        <div className="grid w-full mx-auto grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10 relative">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-3 lg:gap-10">
           {plansData.map((plan) => (
             <div
-              className={`${
-                plan.isPopular
-                  ? "bg-gradient-to-br from-[#ff009928] to-[#ff009905] border-2 border-red-brand/50 rounded-3xl py-8 px-6 transition-all duration-300 ease-linear relative md:-translate-y-4 hover:-translate-y-6 shadow-[0_0_30px_#ff009920]"
-                  : "bg-[#11182780] border border-gray-800 rounded-3xl py-8 px-6 transition-all duration-300 ease-linear hover:-translate-y-2"
-              } flex flex-col h-full`}
               key={plan.id}
+              className={cn(
+                "relative",
+                plan.isPopular && "md:-translate-y-4",
+              )}
             >
-              {/* Popular Badge */}
+              {/* Ambient glow only behind the featured tier */}
               {plan.isPopular && (
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-red-brand to-pink-500 text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg">
-                  Best Value
-                </div>
+                <AmbientGlow className="inset-x-0 top-0 mx-auto h-64 w-64 opacity-80" />
               )}
 
-              <h3 className="text-xl font-bold text-gray-400 uppercase tracking-wider mb-2">
-                {plan.planName}
-              </h3>
+              <GlassCard
+                interactive
+                featured={plan.isPopular}
+                className={cn(
+                  "flex h-full flex-col p-8",
+                  plan.isPopular && "hover:-translate-y-2",
+                )}
+              >
+                {plan.isPopular && (
+                  <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-r from-brand-pink to-brand-rose px-4 py-1 text-sm font-semibold text-white shadow-lg">
+                    Best Value
+                  </div>
+                )}
 
-              <div className="flex items-baseline gap-1 mb-8">
-                <h3 className="text-5xl font-extrabold text-color-white-fresh">
-                  {plan.planAmount}
+                <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-ink-subtle">
+                  {plan.planName}
                 </h3>
-                <span className="text-gray-400 font-medium">one-time</span>
-              </div>
 
-              {/* Flex-1 ensures the button is always pushed to the bottom even if content varies */}
-              <ul className="flex flex-col items-start justify-start gap-5 flex-1 mb-8">
-                {plan.features.map((feature) => (
-                  <li
-                    key={`${feature.info}-${plan.id}`}
-                    className={`flex items-start gap-3 text-[1.05rem] ${feature.included ? "text-white" : "text-gray-400"}`}
+                <div className="mb-8 flex items-baseline gap-1">
+                  <span className="text-5xl font-bold tracking-tight text-ink">
+                    {plan.planAmount}
+                  </span>
+                  <span className="font-medium text-ink-subtle">one-time</span>
+                </div>
+
+                <ul className="mb-8 flex flex-1 flex-col gap-5">
+                  {plan.features.map((feature) => (
+                    <li
+                      key={`${feature.info}-${plan.id}`}
+                      className={cn(
+                        "flex items-start gap-3 text-[1.05rem]",
+                        feature.included ? "text-ink" : "text-ink-subtle",
+                      )}
+                    >
+                      {feature.included ? (
+                        <CheckCircle2 className="h-6 w-6 shrink-0 text-emerald-400" />
+                      ) : (
+                        <XCircle className="h-6 w-6 shrink-0 text-ink-subtle" />
+                      )}
+                      <span className="pt-0.5 leading-tight">{feature.info}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <Link href="/login" className="mt-auto w-full">
+                  <Button
+                    variant={plan.isPopular ? "primary" : "secondary"}
+                    fullWidth
                   >
-                    {feature.included ? (
-                      <CheckCircle2 className="w-6 h-6 text-green-400 shrink-0" />
-                    ) : (
-                      <XCircle className="w-6 h-6 text-gray-400 shrink-0" />
-                    )}
-                    <span className="leading-tight pt-0.5">{feature.info}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <Link href="/login" className="w-full mt-auto">
-                <button
-                  className={`${
-                    plan.isPopular
-                      ? "bg-red-brand text-color-white-fresh hover:bg-white hover:text-red-brand shadow-lg"
-                      : "bg-gray-800 text-color-white-fresh hover:bg-gray-700"
-                  } block w-full text-center transition-all duration-300 ease-linear rounded-full py-3.5 text-[1.05rem] font-bold cursor-pointer`}
-                >
-                  {plan.buttonText}
-                </button>
-              </Link>
+                    {plan.buttonText}
+                  </Button>
+                </Link>
+              </GlassCard>
             </div>
           ))}
         </div>
