@@ -59,7 +59,7 @@ export default function GalleryCard({
         </div>
       )}
 
-      <div className="relative group overflow-hidden rounded-xl bg-gray-900 border border-gray-800 shadow-lg aspect-square">
+      <div className="glass-card-interactive relative group overflow-hidden shadow-lg aspect-square">
         <Image
           src={publicUrl}
           alt="Restored"

@@ -8,8 +8,13 @@ import {
   startAIPrediction,
   checkPredictionStatus,
   finalizeRestoration,
-  refundCredit,
 } from "@/actions/restoreAction";
+import { evaluateCandidate, scoreImageQuality } from "@/actions/qualityActions";
+import {
+  pickBestCandidate,
+  DEFAULT_IDENTITY_THRESHOLD,
+  type Candidate,
+} from "@/lib/aiQuality";
 
 // =============================================================================
 // UPGRADED MODEL PIPELINE (v2) — Significantly better output quality
@@ -115,97 +120,160 @@ export default function RestoreButton({
 
       if (uploadError) throw new Error("Failed to upload image.");
 
-      setLoadingText("Initializing AI pipeline...");
+      setLoadingText("Analyzing image & planning restoration...");
       setProgress(10);
       const init = await initializePipeline(uploadData.path);
       let currentImageUrl = init.imageUrl;
 
-      // ==========================================
-      // PHASE 1: SCRATCH & DAMAGE REPAIR
-      // The Microsoft model excels at detecting tears, scratches, and stains
-      // HR=true gives high-resolution output, with_scratch=true activates scratch detection
-      // ==========================================
-      setLoadingText("Phase 1/4: Repairing scratches & damage...");
-      setProgress(15);
-      
-      let prediction = await executeWithRetry(SCRATCH_MODEL, {
-        image: currentImageUrl,
-        HR: true,
-        with_scratch: true,
-      });
-
-      currentImageUrl = await waitForCompletion(prediction.predictionId!);
-      setProgress(30);
-
-      // Cooldown between models to avoid rate limits
-      setLoadingText("Preparing face reconstruction...");
-      await sleep(3000);
+      // Stage A produced an adaptive plan: we now run ONLY the modules this
+      // specific image needs, instead of every model on every image.
+      const plan = init.plan;
+      console.log("Restoration plan:", plan.reasons);
 
       // ==========================================
-      // PHASE 2: FACE RESTORATION (CodeFormer)
-      // Key improvements:
-      // - codeformer_fidelity: 0.3 (lower = more aggressive reconstruction)
-      //   This is critical for OLD damaged photos where faces are heavily degraded.
-      //   At 0.5 (previous), it was too conservative and left artifacts.
-      //   At 0.3, CodeFormer aggressively reconstructs facial features.
-      // - face_upsample: true (further enhances detected faces)
-      // - background_enhance: true (also improves non-face regions)
-      // - upscale: 2 (2x resolution boost)
+      // PHASE 1: SCRATCH & DAMAGE REPAIR (conditional)
+      // Microsoft model detects tears, scratches, and stains.
       // ==========================================
-      setLoadingText("Phase 2/4: Reconstructing faces & details...");
-      setProgress(35);
-      
-      prediction = await executeWithRetry(FACE_MODEL, {
-        image: currentImageUrl,
-        upscale: 2,
-        face_upsample: true,
-        background_enhance: true,
-        codeformer_fidelity: 0.3,
-      });
+      if (plan.repairScratches) {
+        setLoadingText("Repairing scratches & damage...");
+        setProgress(15);
 
-      currentImageUrl = await waitForCompletion(prediction.predictionId!);
-      setProgress(55);
+        const prediction = await executeWithRetry(SCRATCH_MODEL, {
+          image: currentImageUrl,
+          HR: true,
+          with_scratch: true,
+        });
 
-      setLoadingText("Preparing colorization engine...");
-      await sleep(3000);
+        currentImageUrl = await waitForCompletion(prediction.predictionId!);
+        setProgress(30);
+
+        // Cooldown between models to avoid rate limits
+        setLoadingText("Preparing face reconstruction...");
+        await sleep(3000);
+      }
 
       // ==========================================
-      // PHASE 3: COLORIZATION (DDColor)
-      // Applied AFTER face restoration so the colorizer works with
-      // clean, high-quality facial features rather than damaged inputs.
-      // This order produces significantly more natural skin tones.
+      // PHASE 2: FACE RESTORATION — best-of-N + identity guardrail (conditional)
+      // We generate one or more candidates (Pro = multiple fidelities), score
+      // each by no-reference quality AND identity similarity to the ORIGINAL
+      // upload, then pick the best candidate that preserves identity. We never
+      // ship a polished render of the wrong person.
       // ==========================================
-      setLoadingText("Phase 3/4: Applying intelligent colorization...");
-      setProgress(60);
-      
-      prediction = await executeWithRetry(COLOR_MODEL, {
-        image: currentImageUrl,
-      });
+      const runFaceRestoration = async (inputUrl: string): Promise<string> => {
+        const fidelities = init.isPro
+          ? [plan.faceFidelity, 0.85, 0.55]
+          : [plan.faceFidelity];
 
-      currentImageUrl = await waitForCompletion(prediction.predictionId!);
-      setProgress(75);
+        const candidates: Candidate[] = [];
+        for (let i = 0; i < fidelities.length; i++) {
+          setLoadingText(
+            fidelities.length > 1
+              ? `Reconstructing faces (candidate ${i + 1}/${fidelities.length})...`
+              : "Reconstructing faces & details...",
+          );
 
-      setLoadingText("Preparing final enhancement...");
-      await sleep(3000);
+          const pred = await executeWithRetry(FACE_MODEL, {
+            image: inputUrl,
+            upscale: 2,
+            face_upsample: true,
+            background_enhance: true,
+            codeformer_fidelity: fidelities[i],
+          });
+          const url = await waitForCompletion(pred.predictionId!);
+
+          // Identity must be measured against the ORIGINAL upload, not the
+          // intermediate, so drift can't accumulate undetected.
+          const evalRes = await evaluateCandidate(init.imageUrl, url);
+          candidates.push({
+            url,
+            quality: evalRes.quality,
+            identity: evalRes.identity,
+            identityKnown: evalRes.identityKnown,
+          });
+          console.log(
+            `Face candidate fidelity=${fidelities[i]} quality=${evalRes.quality} ` +
+              `identity=${evalRes.identityKnown ? evalRes.identity.toFixed(3) : "n/a"}`,
+          );
+        }
+
+        const { best, passedIdentity } = pickBestCandidate(
+          candidates,
+          DEFAULT_IDENTITY_THRESHOLD,
+        );
+        if (!passedIdentity) {
+          console.warn(
+            `Identity guardrail: no candidate cleared ${DEFAULT_IDENTITY_THRESHOLD}; ` +
+              `using most faithful (identity=${best.identity.toFixed(3)}).`,
+          );
+        }
+        return best.url;
+      };
+
+      if (plan.faceRestore) {
+        setLoadingText("Reconstructing faces & details...");
+        setProgress(40);
+
+        currentImageUrl = await runFaceRestoration(currentImageUrl);
+        setProgress(55);
+
+        setLoadingText("Preparing colorization engine...");
+        await sleep(3000);
+      }
 
       // ==========================================
-      // PHASE 4: FINAL SUPER-RESOLUTION (Real-ESRGAN + GFPGAN)
-      // This is the NEW phase that was missing before.
-      // Real-ESRGAN upscales the entire image (backgrounds, textures, details)
-      // while GFPGAN (face_enhance) does a final polish pass on any faces.
-      // scale: 4 gives a crisp, high-resolution final output.
+      // PHASE 3: COLORIZATION (DDColor) (conditional — THE KEY FIX)
+      // Runs ONLY when triage flagged the original as grayscale/sepia. We no
+      // longer recolour photos that already have real colour.
       // ==========================================
-      setLoadingText("Phase 4/4: Final HD upscaling & enhancement...");
+      if (plan.colorize) {
+        setLoadingText("Applying intelligent colorization...");
+        setProgress(60);
+
+        const prediction = await executeWithRetry(COLOR_MODEL, {
+          image: currentImageUrl,
+        });
+
+        currentImageUrl = await waitForCompletion(prediction.predictionId!);
+        setProgress(75);
+
+        setLoadingText("Preparing final enhancement...");
+        await sleep(3000);
+      }
+
+      // ==========================================
+      // PHASE 4: FINAL SUPER-RESOLUTION (Real-ESRGAN)
+      // scale is computed from the input resolution (plan.upscale).
+      // face_enhance (GFPGAN) only runs if we did NOT already restore faces in
+      // Phase 2 — this avoids the double face pass that caused "plastic" skin.
+      // ==========================================
+      setLoadingText("Final HD upscaling & enhancement...");
       setProgress(80);
-      
-      prediction = await executeWithRetry(UPSCALE_MODEL, {
+
+      const upscalePrediction = await executeWithRetry(UPSCALE_MODEL, {
         image: currentImageUrl,
-        scale: 4,
-        face_enhance: true,
+        scale: plan.upscale,
+        face_enhance: !plan.faceRestore,
       });
 
-      currentImageUrl = await waitForCompletion(prediction.predictionId!);
+      currentImageUrl = await waitForCompletion(upscalePrediction.predictionId!);
       setProgress(92);
+
+      // --- Final quality gate (QA telemetry) ---
+      // Score the finished render so we can monitor output quality over time
+      // and (later) trigger an automatic re-run when it falls below target.
+      try {
+        const finalScore = await scoreImageQuality(currentImageUrl);
+        if (finalScore) {
+          console.log(
+            `Final quality score: ${finalScore.score}/10 ` +
+              `(sharpness=${Math.round(finalScore.sharpness)}, ` +
+              `contrast=${Math.round(finalScore.contrast)}, ` +
+              `entropy=${finalScore.entropy.toFixed(2)})`,
+          );
+        }
+      } catch (e) {
+        console.warn("Final quality scoring skipped:", e);
+      }
 
       // ==========================================
       // FINALIZE: Watermark (free users) & Save
@@ -229,10 +297,8 @@ export default function RestoreButton({
       console.error("Pipeline Error:", error);
       onError(error.message || "Failed to process image.");
 
-      // Refund credit if we failed after initialization (during any AI phase)
-      if (loadingText.includes("Phase")) {
-        await refundCredit();
-      }
+      // No refund needed: credits are only charged in finalizeRestoration()
+      // AFTER a fully successful run. A failure here means nothing was charged.
     } finally {
       setIsProcessing(false);
       setLoadingText("");

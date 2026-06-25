@@ -6,13 +6,81 @@ import Replicate from "replicate";
 import { revalidatePath } from "next/cache";
 import sharp from "sharp";
 import path from "path";
+import {
+  analyzeImageBuffer,
+  buildRestorationPlan,
+  SAFE_DEFAULT_PLAN,
+  type RestorationPlan,
+} from "@/lib/restorationPlan";
+import { detectFaces } from "@/actions/qualityActions";
 
 const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN,
 });
 
 // ============================================================================
-// STEP 1: Verify, Deduct Credit, and Get Public URL
+// HELPER: Safely extract a usable image URL from a Replicate output.
+// Never assume the output is a bare string. Different models return:
+//   - a bare URL string                    -> "https://..."
+//   - an array of URLs (e.g. CodeFormer)   -> ["https://..."]
+//   - a FileOutput-like object w/ .url()   -> { url: () => URL }
+//   - an object wrapping the url           -> { output: "https://..." }
+// Throws if no valid http(s) URL can be resolved.
+// ============================================================================
+export function extractImageUrl(output: unknown): string {
+  const visit = (value: unknown): string | null => {
+    if (value == null) return null;
+
+    if (typeof value === "string") {
+      return value.startsWith("http") ? value : null;
+    }
+
+    if (value instanceof URL) {
+      return visit(value.toString());
+    }
+
+    if (Array.isArray(value)) {
+      // Walk from the end: most models place the final/highest-res asset last.
+      for (let i = value.length - 1; i >= 0; i--) {
+        const found = visit(value[i]);
+        if (found) return found;
+      }
+      return null;
+    }
+
+    if (typeof value === "object") {
+      const obj = value as Record<string, unknown>;
+
+      // replicate's FileOutput exposes a .url() method.
+      if (typeof obj.url === "function") {
+        try {
+          const found = visit((obj.url as () => unknown)());
+          if (found) return found;
+        } catch {
+          /* fall through to key probing */
+        }
+      }
+
+      for (const key of ["url", "image", "output", "video", "file"]) {
+        if (key in obj) {
+          const found = visit(obj[key]);
+          if (found) return found;
+        }
+      }
+    }
+
+    return null;
+  };
+
+  const url = visit(output);
+  if (!url) {
+    throw new Error("Invalid AI output: no usable image URL was returned.");
+  }
+  return url;
+}
+
+// ============================================================================
+// STEP 1: Verify Credits & Get Public URL (deduction is deferred to STEP 4)
 // ============================================================================
 export async function initializePipeline(imagePath: string) {
   const supabase = await createClient();
@@ -31,21 +99,63 @@ export async function initializePipeline(imagePath: string) {
   if (!profile || profile.credits <= 0)
     throw new Error("Insufficient credits.");
 
-  // Deduct credit upfront
-  await supabase
-    .from("profiles")
-    .update({ credits: profile.credits - 1 })
-    .eq("id", user.id);
+  // NOTE: We intentionally DO NOT deduct here. The credit is only charged in
+  // finalizeRestoration(), after Replicate has produced a valid image AND it
+  // has been safely downloaded, processed, and persisted. This prevents the
+  // billing leak where users were charged for failed/aborted generations.
 
   const { data: publicUrlData } = supabase.storage
     .from("restoration_images")
     .getPublicUrl(imagePath);
+
+  // --- Stage A: analyze the upload and build an adaptive restoration plan ---
+  // Clone SAFE_DEFAULT_PLAN (incl. its reasons array) so we never mutate the
+  // shared exported constant when we push reasons / override flags below.
+  let plan: RestorationPlan = {
+    ...SAFE_DEFAULT_PLAN,
+    reasons: [...SAFE_DEFAULT_PLAN.reasons],
+  };
+  try {
+    const res = await fetch(publicUrlData.publicUrl);
+    if (res.ok) {
+      const buf = Buffer.from(await res.arrayBuffer());
+      const insights = await analyzeImageBuffer(buf);
+      plan = buildRestorationPlan(insights);
+    } else {
+      console.warn(
+        `[initializePipeline] could not fetch image for analysis (HTTP ${res.status}); using safe defaults.`,
+      );
+    }
+  } catch (e: any) {
+    console.error(
+      "[initializePipeline] analysis failed, using safe defaults:",
+      e?.message ?? e,
+    );
+  }
+
+  // --- Stage A (cont.): gate face restoration on actual face detection ---
+  // Degrades gracefully: if no detector is configured/available, detectFaces
+  // returns hasFaces=true (confident=false), preserving prior behavior.
+  try {
+    const faces = await detectFaces(publicUrlData.publicUrl);
+    plan.faceRestore = faces.hasFaces;
+    plan.reasons.push(
+      faces.confident
+        ? `Face detection: ${faces.faceCount} face(s) → faceRestore=${faces.hasFaces}.`
+        : `Face detection unavailable → faceRestore defaulted to ${faces.hasFaces}.`,
+    );
+  } catch (e: any) {
+    console.error("[initializePipeline] face detection failed:", e?.message ?? e);
+  }
+
+  console.log("[initializePipeline] restoration plan:", plan.reasons);
 
   return {
     success: true,
     imageUrl: publicUrlData.publicUrl,
     userId: user.id,
     isPro: profile.plan_name?.toUpperCase() === "PRO", // Safely check plan
+    plan,
   };
 }
 
@@ -67,7 +177,8 @@ export async function startAIPrediction(modelEndpoint: string, inputData: any) {
     });
     return { success: true, predictionId: prediction.id };
   } catch (error: any) {
-    return { success: false, error: error.message };
+    console.error("[startAIPrediction] failed:", error?.message ?? error);
+    return { success: false, error: error?.message ?? "Failed to start AI prediction" };
   }
 }
 
@@ -77,13 +188,36 @@ export async function startAIPrediction(modelEndpoint: string, inputData: any) {
 export async function checkPredictionStatus(predictionId: string) {
   try {
     const prediction = await replicate.predictions.get(predictionId);
+
+    // Surface Replicate's own failure reason instead of silently returning it
+    // as a "successful" check with no output.
+    if (prediction.status === "failed" || prediction.status === "canceled") {
+      return {
+        success: false,
+        status: prediction.status,
+        error: prediction.error
+          ? String(prediction.error)
+          : "The AI model failed to process this image.",
+      };
+    }
+
+    // Only resolve a concrete URL once the model has finished. While the
+    // prediction is still "processing"/"starting", output is null and must
+    // be passed through untouched.
+    let output: string | undefined;
+    if (prediction.status === "succeeded") {
+      output = extractImageUrl(prediction.output);
+    }
+
     return {
       success: true,
       status: prediction.status,
-      output: prediction.output,
+      output,
     };
   } catch (error: any) {
-    return { success: false, error: error.message };
+    // Log securely on the server; never leak internals to the client.
+    console.error("[checkPredictionStatus] failed:", error?.message ?? error);
+    return { success: false, error: error?.message ?? "Failed to check status" };
   }
 }
 
@@ -91,18 +225,31 @@ export async function checkPredictionStatus(predictionId: string) {
 // STEP 4: Finalize, Watermark & Save
 // ============================================================================
 export async function finalizeRestoration(
-  finalReplicateUrl: string,
+  finalReplicateOutput: unknown,
   userId: string,
   isPro: boolean,
 ) {
   try {
     const supabase = await createClient();
 
-    // Download image from Replicate
+    // Defensive: never assume a bare string. Resolve the real URL whether the
+    // client handed us a string, an array (CodeFormer), or an object.
+    const finalReplicateUrl = extractImageUrl(finalReplicateOutput);
+
+    // Download image from Replicate — and verify it actually succeeded.
     const response = await fetch(finalReplicateUrl);
+    if (!response.ok) {
+      throw new Error(
+        `Failed to download AI image (HTTP ${response.status}).`,
+      );
+    }
     const arrayBuffer = await response.arrayBuffer();
-    
+
     let imageBuffer: Buffer = Buffer.from(arrayBuffer as ArrayBuffer);
+
+    if (imageBuffer.length === 0) {
+      throw new Error("Downloaded AI image was empty.");
+    }
 
     // Ensure final output is high-quality PNG with maximum detail preservation
     // Normalize to PNG format with optimal compression (lossless)
@@ -148,9 +295,31 @@ export async function finalizeRestoration(
 
     if (uploadError) throw new Error("Failed to upload to storage");
 
-    await supabase
+    const { error: insertError } = await supabase
       .from("restorations")
       .insert({ user_id: userId, image_url: filePath });
+
+    if (insertError) throw new Error("Failed to record restoration.");
+
+    // ========================================================================
+    // DEFERRED CREDIT DEDUCTION
+    // We have now confirmed: Replicate returned a valid URL, the image was
+    // downloaded, processed, persisted to storage, and recorded in the DB.
+    // ONLY now is it safe to charge the user. If anything above threw, we land
+    // in the catch block below and the user is never charged.
+    // ========================================================================
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("credits")
+      .eq("id", userId)
+      .single();
+
+    if (profile && profile.credits > 0) {
+      await supabase
+        .from("profiles")
+        .update({ credits: profile.credits - 1 })
+        .eq("id", userId);
+    }
 
     const { data } = supabase.storage
       .from("restored_images")
@@ -159,13 +328,23 @@ export async function finalizeRestoration(
     revalidatePath("/dashboard", "layout");
     return { success: true, finalUrl: data.publicUrl };
   } catch (error: any) {
-    return { success: false, error: error.message };
+    // Log the real cause server-side for debugging...
+    console.error("[finalizeRestoration] failed:", error?.message ?? error);
+    // ...but return a clean, user-safe message. No credit was charged because
+    // deduction only happens after a fully successful run above.
+    return {
+      success: false,
+      error: "Generation failed, your credit was not charged.",
+    };
   }
 }
 
 
 // ============================================================================
-// EMERGENCY REFUND
+// MANUAL / ADMIN REFUND
+// With deferred deduction (see finalizeRestoration), failed generations no
+// longer charge the user, so the client should NOT auto-refund on failure.
+// This remains available for manual/admin corrections only.
 // ============================================================================
 export async function refundCredit() {
   const supabase = await createClient();

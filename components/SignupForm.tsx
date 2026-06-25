@@ -46,7 +46,7 @@ export default function SignupForm() {
   };
 
   return (
-    <div className="bg-[#050a14] w-full min-h-screen relative flex items-start pt-7 justify-center text-white pb-10">
+    <div className="w-full min-h-screen relative flex items-start pt-7 justify-center text-neutral-100 pb-10">
       <div className="w-full relative flex flex-col items-center justify-center">
         {/* Logo */}
         <div className="w-[10rem] mb-3">
@@ -66,39 +66,39 @@ export default function SignupForm() {
         )}
 
         {/* Form Wrapper */}
-        <div className="w-full mt-10 px-12 sm:max-w-[450px] sm:p-6 sm:border sm:border-[#5c4f64] sm:rounded-[2rem] sm:bg-[#140511]">
-          <h2 className="text-center text-2xl font-bold">Signup</h2>
+        <div className="w-full mt-10 px-12 sm:max-w-[450px] sm:p-6 sm:glass-card">
+          <h2 className="text-center text-2xl font-bold tracking-tight text-neutral-100">Signup</h2>
 
           <form action={formAction} className="mt-5">
             {/* Name Input */}
             <div className="mb-4 w-full">
-              <label className="text-sm font-bold text-white mb-1 block">
+              <label className="text-sm font-bold text-neutral-200 mb-1 block">
                 Name
               </label>
               <input
                 type="text"
                 name="name"
                 required
-                className="bg-[rgb(25,13,34)] border transition-all duration-300 ease-linear focus:outline-1 border-[#332b35] focus:outline-amber-50 rounded-md text-sm font-bold w-full px-4 py-3"
+                className="bg-white/[0.03] border border-white/10 text-neutral-200 placeholder:text-neutral-500 focus:border-white/30 focus:outline-none rounded-md text-sm font-bold w-full px-4 py-3 transition-all duration-300 ease-linear"
               />
             </div>
 
             {/* Email Input */}
             <div className="mb-4 w-full">
-              <label className="text-sm font-bold text-white mb-1 block">
+              <label className="text-sm font-bold text-neutral-200 mb-1 block">
                 Email
               </label>
               <input
                 type="email"
                 name="email"
                 required
-                className="bg-[rgb(25,13,34)] border transition-all duration-300 ease-linear focus:outline-1 border-[#332b35] focus:outline-amber-50 rounded-md text-sm font-bold w-full px-4 py-3"
+                className="bg-white/[0.03] border border-white/10 text-neutral-200 placeholder:text-neutral-500 focus:border-white/30 focus:outline-none rounded-md text-sm font-bold w-full px-4 py-3 transition-all duration-300 ease-linear"
               />
             </div>
 
             {/* Password Input */}
             <div className="mb-4 w-full">
-              <label className="text-sm font-bold text-white mb-1 block">
+              <label className="text-sm font-bold text-neutral-200 mb-1 block">
                 Password
               </label>
               <input
@@ -109,13 +109,13 @@ export default function SignupForm() {
                 onChange={(e) =>
                   setPasswords({ ...passwords, password: e.target.value })
                 }
-                className="bg-[rgb(25,13,34)] border transition-all duration-300 ease-linear focus:outline-1 border-[#332b35] focus:outline-amber-50 rounded-md text-sm font-bold w-full px-4 py-3"
+                className="bg-white/[0.03] border border-white/10 text-neutral-200 placeholder:text-neutral-500 focus:border-white/30 focus:outline-none rounded-md text-sm font-bold w-full px-4 py-3 transition-all duration-300 ease-linear"
               />
             </div>
 
             {/* Confirm Password Input */}
             <div className="mb-4 w-full">
-              <label className="text-sm font-bold text-white mb-1 block">
+              <label className="text-sm font-bold text-neutral-200 mb-1 block">
                 Confirm Password
               </label>
               <input
@@ -129,7 +129,7 @@ export default function SignupForm() {
                   })
                 }
                 onBlur={checkPassword}
-                className="bg-[rgb(25,13,34)] border transition-all duration-300 ease-linear focus:outline-1 border-[#332b35] focus:outline-amber-50 rounded-md text-sm font-bold w-full px-4 py-3"
+                className="bg-white/[0.03] border border-white/10 text-neutral-200 placeholder:text-neutral-500 focus:border-white/30 focus:outline-none rounded-md text-sm font-bold w-full px-4 py-3 transition-all duration-300 ease-linear"
               />
             </div>
 
@@ -147,7 +147,7 @@ export default function SignupForm() {
                 {isPending ? "Processing" : "Signup"}
               </button>
 
-              <span className="block mt-2 underline text-gray-400 text-sm font-bold hover:text-gray-300 cursor-pointer">
+              <span className="block mt-2 underline text-neutral-400 text-sm font-bold hover:text-neutral-300 cursor-pointer">
                 <Link href="/login">Already have an account?</Link>
               </span>
             </div>
@@ -181,7 +181,7 @@ export default function SignupForm() {
         {/* Back Link */}
         <Link
           href="/"
-          className="mt-6 font-normal text-gray-400 underline cursor-pointer"
+          className="mt-6 font-normal text-neutral-400 underline cursor-pointer"
         >
           Back to HomePage
         </Link>

@@ -84,23 +84,23 @@ export default function ImageUpload() {
   if (restoredImage && previewUrl) {
     return (
       <div className="w-full mt-4 flex flex-col items-center">
-        <div className="w-full max-w-2xl bg-blue-low-200 border border-gray-800 rounded-2xl p-6 mb-8 flex flex-col sm:flex-row items-center justify-between shadow-custom">
+        <div className="w-full max-w-2xl glass-card p-6 mb-8 flex flex-col sm:flex-row items-center justify-between shadow-custom">
           <div className="flex items-center gap-4 mb-4 sm:mb-0">
             <div className="bg-green-500/20 p-3 rounded-full">
               <CheckCircle className="text-green-500 w-6 h-6" />
             </div>
             <div className="text-left">
-              <h3 className="text-color-white-fresh font-bold text-lg">
+              <h3 className="text-neutral-100 font-bold text-lg">
                 Image restored successfully!
               </h3>
-              <p className="text-color-gray text-sm">
+              <p className="text-neutral-400 text-sm">
                 Your image is ready to download.
               </p>
             </div>
           </div>
           <button
             onClick={handleDownload}
-            className="bg-red-brand hover:bg-red-brand-light text-color-white-fresh px-6 py-3 rounded-full font-bold text-sm transition-all flex items-center gap-2 drop-shadow-[0px_0px_1px_#fff]"
+            className="bg-red-brand-light hover:bg-red-brand text-neutral-50 px-6 py-3 rounded-full font-bold text-sm transition-all duration-300 flex items-center gap-2"
           >
             <Download className="w-5 h-5" />
             Download Image
@@ -108,12 +108,12 @@ export default function ImageUpload() {
         </div>
 
         <div className="w-full max-w-2xl text-left mb-3">
-          <h4 className="text-color-white-low text-sm font-bold uppercase tracking-wider">
+          <h4 className="text-neutral-400 text-sm font-bold uppercase tracking-wider">
             Result Preview
           </h4>
         </div>
 
-        <div className="w-full max-w-2xl rounded-2xl overflow-hidden border-2 border-gray-800 shadow-custom">
+        <div className="w-full max-w-2xl glass-card overflow-hidden shadow-custom">
           <ReactCompareSlider
             itemOne={
               <ReactCompareSliderImage src={previewUrl} alt="Original Image" />
@@ -129,7 +129,7 @@ export default function ImageUpload() {
 
         <button
           onClick={(e) => clearFile(e)}
-          className="mt-8 flex items-center gap-2 bg-blue-low-200 hover:bg-gray-700 text-color-white-fresh px-6 py-3 rounded-full font-bold transition-all"
+          className="mt-8 flex items-center gap-2 bg-white/[0.04] border border-white/10 hover:bg-white/[0.08] hover:border-white/20 text-neutral-100 px-6 py-3 rounded-full font-bold transition-all"
         >
           <RefreshCw className="w-5 h-5" />
           Restore Another Image
@@ -152,26 +152,26 @@ export default function ImageUpload() {
         <div
           {...getRootProps()}
           className={`border-2 border-dashed rounded-2xl p-12 md:p-24 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 ease-in-out
-        ${isDragActive ? "border-red-brand bg-red-brand/15" : "border-gray-700 hover:border-gray-500 hover:bg-blue-low-200"}
+        ${isDragActive ? "border-red-brand bg-red-brand/15" : "border-white/20 bg-white/[0.02] hover:border-white/40"}
         ${isDragReject ? "border-red-500 bg-red-500/10" : ""}`}
         >
           <input {...getInputProps()} />
-          <div className="h-16 w-16 bg-gray-800 rounded-full flex items-center justify-center mb-4">
+          <div className="h-16 w-16 bg-white/5 rounded-full flex items-center justify-center mb-4">
             <UploadCloud className="text-red-brand w-8 h-8" />
           </div>
-          <h3 className="text-xl font-bold text-color-white-fresh mb-2">
+          <h3 className="text-xl font-bold text-neutral-100 mb-2">
             {isDragActive
               ? "Drop image here..."
               : "Click or drag image to upload"}
           </h3>
-          <p className="text-sm text-color-gray">
+          <p className="text-sm text-neutral-400">
             Supports JPG, PNG, and WebP (Max 5MB)
           </p>
         </div>
       ) : (
         /* --- STATE 2: File Selected View --- */
-        <div className="bg-blue-low-200 border border-gray-800 rounded-2xl p-6 flex flex-col items-center">
-          <div className="relative w-full max-w-md aspect-[4/3] rounded-lg overflow-hidden border border-gray-700 mb-6 bg-black-background">
+        <div className="glass-card p-6 flex flex-col items-center">
+          <div className="relative w-full max-w-md aspect-[4/3] rounded-lg overflow-hidden border border-white/10 mb-6 bg-white/[0.02]">
             <Image
               src={previewUrl}
               alt="Preview"
@@ -181,16 +181,16 @@ export default function ImageUpload() {
             />
             <button
               onClick={clearFile}
-              className="absolute top-3 right-3 bg-black/60 hover:bg-red-500 text-color-white p-2 rounded-full transition-colors backdrop-blur-sm"
+              className="absolute top-3 right-3 bg-white/10 hover:bg-white/20 border border-white/10 text-neutral-200 p-2 rounded-full transition-colors backdrop-blur-md"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
 
-          <div className="flex flex-row items-center justify-between w-full max-w-md bg-black-background p-4 rounded-xl border border-gray-800">
+          <div className="flex flex-row items-center justify-between w-full max-w-md bg-white/[0.02] p-4 rounded-xl border border-white/10">
             <div className="flex items-center gap-3 overflow-hidden">
               <ImageIcon className="text-red-brand w-5 h-5 flex-shrink-0" />
-              <span className="text-sm text-color-white-low truncate">
+              <span className="text-sm text-neutral-300 truncate">
                 {file?.name}
               </span>
             </div>

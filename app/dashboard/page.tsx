@@ -41,27 +41,27 @@ export default async function DashboardPage() {
   return (
     <>
       <div className="flex flex-col gap-8 max-w-5xl mx-auto overflow-hidden pt-14 md:pt-0">
-        <h1 className="text-3xl font-bold">Restore Image</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-neutral-100">Restore Image</h1>
 
         {/* The Status Dashboard */}
-        <div className="bg-gray-800 p-6 rounded-2xl border border-gray-800 flex justify-between items-center">
+        <div className="glass-card p-6 flex justify-between items-center">
           <div className="flex flex-col items-center justify-center">
-            <p className="text-sm text-gray-400">Workspace for</p>
-            <p className="text-xl font-semibold text-white">
+            <p className="text-sm text-neutral-400">Workspace for</p>
+            <p className="text-xl font-semibold text-neutral-100">
               {profile?.full_name}
             </p>
           </div>
           <div className="text-right flex items-center gap-6">
             <div className="flex flex-col items-center justify-center">
-              <p className="text-sm text-gray-400">Plan</p>
+              <p className="text-sm text-neutral-400">Plan</p>
               <p className="text-red-brand-light italic font-bold uppercase tracking-wider">
                 {profile?.plan_name}
               </p>
             </div>
-            <div className="w-px h-8 bg-gray-700"></div> {/* Divider */}
+            <div className="w-px h-8 bg-white/10"></div> {/* Divider */}
             <div className="flex flex-col items-center justify-center">
-              <p className="text-sm text-gray-400">Credits</p>
-              <p className="text-2xl font-bold text-white">
+              <p className="text-sm text-neutral-400">Credits</p>
+              <p className="text-2xl font-bold text-neutral-100">
                 {profile?.credits}
               </p>
             </div>
@@ -70,14 +70,14 @@ export default async function DashboardPage() {
         {hasCredits ? (
           <ImageUpload />
         ) : (
-          <div className="mt-4 border-2 border-dashed border-gray-700 bg-blue-low-200 rounded-2xl p-12 md:p-24 flex flex-col items-center justify-center text-center">
-            <div className="h-16 w-16 bg-gray-800 rounded-full flex items-center justify-center mb-4 text-2xl">
+          <div className="mt-4 border-2 border-dashed border-white/20 bg-white/[0.02] backdrop-blur-md rounded-2xl p-12 md:p-24 flex flex-col items-center justify-center text-center">
+            <div className="h-16 w-16 bg-white/5 rounded-full flex items-center justify-center mb-4 text-2xl">
               💳
             </div>
-            <h3 className="text-xl font-bold text-color-white-fresh mb-2">
+            <h3 className="text-xl font-bold text-neutral-100 mb-2">
               Zero Credits Remaining
             </h3>
-            <p className="text-sm text-color-gray mb-8 max-w-md">
+            <p className="text-sm text-neutral-400 mb-8 max-w-md">
               You don't have sufficient credit to perform this operation.
               Upgrade your plan to continue restoring images.
             </p>

@@ -14,7 +14,7 @@ export default function LogoutBtn() {
       <button
         type="submit"
         disabled={isPending}
-        className="hover:text-red-500 transition-colors text-left cursor-pointer"
+        className="hover:text-red-brand-light transition-colors text-left cursor-pointer"
       >
         {isPending ? "Logging out..." : "Logout"}
       </button>
