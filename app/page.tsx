@@ -27,11 +27,9 @@ export const metadata: Metadata = {
 
 
 export default function Home():React.ReactElement {
-  return(
-    <main>
-      <div className="w-full md:bg-[#050a14] md:relative md:mx-auto">
-        <Banner />
-      </div>
+  return (
+    <main className="bg-canvas">
+      <Banner />
       <HowItWorks />
       <WhyChoose />
       <Plans />

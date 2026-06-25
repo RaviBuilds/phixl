@@ -1,10 +1,12 @@
 import Link from "next/link";
 import img1 from "@/public/img1.jpg";
 import img2 from "@/public/img2.jpg";
-import RedBtn from "@/components/RedBtn";
+import Button from "@/components/ui/Button";
+import GlassCard from "@/components/ui/GlassCard";
+import Eyebrow from "@/components/ui/Eyebrow";
+import AmbientGlow from "@/components/ui/AmbientGlow";
 import ImageReveal from "@/components/ImageReveal";
 import { ArrowSvg } from "@/components/Icon";
-import RedLabel from "@/components/RedLabel";
 
 interface TrustCardData {
   card_icon: string;
@@ -32,77 +34,79 @@ export default function Banner(): React.ReactElement {
   ];
 
   return (
-    <section className="w-full max-w-7xl mx-auto px-6 py-12 md:py-12 flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
-      {/* LEFT COLUMN: Emotional Copy & CTA */}
-      <div className="w-full lg:w-[55%] text-center lg:text-left flex flex-col items-center lg:items-start">
-        <div className="flex">
-          <RedLabel>Historical AI Preservation</RedLabel>
-        </div>
-        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4.2rem] mt-4 mb-6 text-color-white-fresh font-bold leading-[1.1]">
+    <section className="relative mx-auto flex w-full max-w-7xl flex-col items-center gap-12 overflow-hidden px-6 py-24 md:py-28 lg:flex-row lg:gap-16">
+      {/* Ambient glow behind the hero focal point */}
+      <AmbientGlow className="right-0 top-1/4 h-[28rem] w-[28rem] opacity-70 lg:h-[34rem] lg:w-[34rem]" />
+
+      {/* LEFT COLUMN: Emotional copy & CTA */}
+      <div className="flex w-full flex-col items-center text-center lg:w-[55%] lg:items-start lg:text-left">
+        <Eyebrow>Historical AI Preservation</Eyebrow>
+
+        <h1 className="mb-6 mt-6 text-balance text-4xl font-semibold leading-[1.05] tracking-tight text-ink sm:text-5xl md:text-6xl lg:text-[4.2rem]">
           Bring Your Family History{" "}
-          <span className="bg-gradient-to-r from-red-brand to-color-white-fresh bg-clip-text text-transparent">
-            Back to Life
-          </span>
+          <span className="text-gradient-brand">Back to Life</span>
         </h1>
 
-        <h2 className="text-gray-300 font-light mb-8 text-lg md:text-xl leading-relaxed max-w-2xl">
+        <p className="mb-8 max-w-2xl text-lg leading-relaxed text-neutral-200 md:text-xl">
           Seamlessly repair tears, remove scratches, and vividly colorize faded
           black-and-white photos with artifact-free AI. Your memories, perfectly
           preserved.
-        </h2>
+        </p>
 
-        <div className="flex flex-col gap-4 items-center lg:items-start w-full">
+        <div className="flex w-full flex-col items-center gap-4 lg:items-start">
           <Link href="/login" className="w-full sm:w-auto">
-            <RedBtn svgComponent={<ArrowSvg />} outlineBtn={false}>
+            <Button icon={<ArrowSvg />} fullWidth>
               Restore Your First Photo Free
-            </RedBtn>
+            </Button>
           </Link>
 
-          <span className="text-sm pt-2 text-gray-400 font-medium flex items-center justify-center lg:justify-start gap-2">
-            <span className="text-green-400">✓</span> 100% Authentic Results.
+          <span className="flex items-center justify-center gap-2 pt-2 text-sm font-medium text-ink-subtle lg:justify-start">
+            <span className="text-emerald-400">✓</span> 100% Authentic Results.
             Originals never stored.
           </span>
         </div>
 
-        {/* DESKTOP TRUST RIBBON - Sleeker and pushed further down */}
-        <div className="hidden lg:grid mt-24 grid-cols-3 gap-4 w-full pr-4">
+        {/* DESKTOP TRUST RIBBON */}
+        <div className="mt-24 hidden w-full grid-cols-3 gap-4 pr-4 lg:grid">
           {trustRibbon.map((card) => (
-            <div
-              className="bg-[#0b0f19] border border-gray-800 flex flex-col rounded-xl items-center justify-center gap-1 py-3 px-3 text-center hover:border-red-brand/50 transition-all duration-300 shadow-sm"
+            <GlassCard
               key={card.card_title}
+              interactive
+              className="flex flex-col items-center justify-center gap-1 p-4 text-center"
             >
-              <div className="text-xl mb-1">{card.card_icon}</div>
-              <h3 className="text-sm font-bold text-color-white-fresh">
+              <div className="mb-1 text-xl">{card.card_icon}</div>
+              <h3 className="text-sm font-semibold text-ink">
                 {card.card_title}
               </h3>
-              <span className="block text-gray-400 font-normal text-[0.7rem] leading-tight">
+              <span className="block text-[0.7rem] leading-tight text-ink-subtle">
                 {card.card_subtitle}
               </span>
-            </div>
+            </GlassCard>
           ))}
         </div>
       </div>
 
-      {/* RIGHT COLUMN: Visual Proof Slider */}
-      <div className="w-full lg:w-[45%] flex justify-center lg:justify-end aspect-square min-h-[350px] md:min-h-[450px]">
+      {/* RIGHT COLUMN: Visual proof slider */}
+      <div className="flex aspect-square min-h-[350px] w-full justify-center md:min-h-[450px] lg:w-[45%] lg:justify-end">
         <ImageReveal img1={img1} img2={img2} />
       </div>
 
-      {/* MOBILE TRUST RIBBON - Sleeker and pushed further down */}
-      <div className="lg:hidden w-full grid grid-cols-1 sm:grid-cols-3 gap-3 mt-12">
+      {/* MOBILE TRUST RIBBON */}
+      <div className="mt-12 grid w-full grid-cols-1 gap-3 sm:grid-cols-3 lg:hidden">
         {trustRibbon.map((card) => (
-          <div
-            className="bg-[#0b0f19] border border-gray-800 flex flex-col rounded-xl items-center justify-center gap-1 py-3 px-3 hover:border-red-brand/50 transition-all duration-300 shadow-sm"
+          <GlassCard
             key={card.card_title}
+            interactive
+            className="flex flex-col items-center justify-center gap-1 p-4 text-center"
           >
-            <div className="text-xl mb-1">{card.card_icon}</div>
-            <h3 className="text-sm font-bold text-color-white-fresh">
+            <div className="mb-1 text-xl">{card.card_icon}</div>
+            <h3 className="text-sm font-semibold text-ink">
               {card.card_title}
             </h3>
-            <span className="block text-gray-400 font-normal text-xs">
+            <span className="block text-xs text-ink-subtle">
               {card.card_subtitle}
             </span>
-          </div>
+          </GlassCard>
         ))}
       </div>
     </section>

@@ -1,24 +1,102 @@
 @import "tailwindcss";
 
 @theme {
-    --font-sans: var(--font-quicksand), sans-serif;
+    /* ── Typography ───────────────────────────────────────────────
+       Geist variable font (loaded in layout.tsx) with a robust
+       system fallback stack for zero layout shift. */
+    --font-sans: var(--font-geist), ui-sans-serif, system-ui, -apple-system,
+        "Segoe UI", Roboto, sans-serif;
+
+    /* ── Brand (kept for backwards-compat across app/dashboard) ──── */
     --color-red-brand: #c20074;
     --color-red-brand-light: #ff4ab7;
     --color-black-background: #050a14;
-    
-    /* 🚨 UPGRADED GRAYS FOR LIGHTHOUSE 100/100 CONTAST 🚨 */
-    --color-gray-text: #9ca3af;       /* Was #2a2a2b. Now perfectly matches Tailwind gray-400 */
-    --color-color-gray: #9ca3af;      /* Was #6d6d6d. Bumped up to ensure >4.5:1 contrast */
-    --color-color-white-low: #cbd5e1; /* Was #b3b3b3. Bumped up slightly for crispness */
-    
+
+    /* Refined brand gradient stops — pink → rose, used sparingly. */
+    --color-brand-pink: #ec4899;   /* pink-500  */
+    --color-brand-rose: #fb7185;   /* rose-400  */
+
+    /* ── Linear-inspired surface ladder (deep near-black canvas) ─── */
+    --color-canvas: #060911;       /* page background, faint blue tint */
+    --color-surface-1: #0c1019;    /* one step up — solid panels       */
+    --color-surface-2: #141925;    /* two steps up — featured panels    */
+
+    /* ── Ink scale ───────────────────────────────────────────────── */
+    --color-ink: #f7f8f8;          /* headlines / emphasised body       */
+    --color-ink-muted: #e5e7eb;    /* default paragraph (off-white)     */
+    --color-ink-subtle: #9ca3af;   /* captions / meta                   */
+
+    /* ── Legacy grays (used by other pages — do not remove) ──────── */
+    --color-gray-text: #9ca3af;
+    --color-color-gray: #9ca3af;
+    --color-color-white-low: #cbd5e1;
     --color-color-white: #e5e7eb;
-    --color-color-white-fresh:#fafafa;
-    --color-blue-low-200:#1f293780;
-    --shadow-custom: 2px 4px 10px #ff009965;
+    --color-color-white-fresh: #fafafa;
+    --color-blue-low-200: #1f293780;
+
+    --shadow-custom: 0 10px 30px -10px rgba(236, 72, 153, 0.45);
 }
 
+/* ── Base layer ──────────────────────────────────────────────────── */
 body {
-    font-family: "Quicksand", sans-serif;
-    @apply w-full h-full;
+    font-family: var(--font-geist), "Quicksand", sans-serif;
+    @apply w-full min-h-screen bg-canvas text-ink antialiased;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
 }
 
+/* Tighten tracking on display headings globally for the premium feel. */
+h1,
+h2,
+h3 {
+    letter-spacing: -0.02em;
+}
+
+/* ── Reusable design utilities ───────────────────────────────────── */
+
+/* Glassmorphism surface: translucent fill, blur, hairline border and a
+   subtle top-edge highlight for a tactile, 3D feel. */
+@utility glass {
+    background-color: rgb(255 255 255 / 0.03);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgb(255 255 255 / 0.10);
+    box-shadow:
+        inset 0 1px 0 0 rgb(255 255 255 / 0.06),
+        0 1px 2px 0 rgb(0 0 0 / 0.30);
+}
+
+/* Ambient glow blob — pure CSS, GPU-cheap. Place absolutely behind a
+   focal point. Color defaults to the brand gradient. */
+@utility ambient-glow {
+    background: radial-gradient(
+        closest-side,
+        rgba(236, 72, 153, 0.22),
+        rgba(251, 113, 133, 0.10),
+        transparent
+    );
+    filter: blur(64px);
+    pointer-events: none;
+}
+
+/* The sparing brand accent: pink → rose gradient text/fill. */
+@utility text-gradient-brand {
+    background-image: linear-gradient(
+        to right,
+        var(--color-brand-pink),
+        var(--color-brand-rose)
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* Respect users who prefer reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+    }
+}

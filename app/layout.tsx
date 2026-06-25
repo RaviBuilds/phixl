@@ -1,16 +1,15 @@
 import type { Metadata } from "next";
-import { Quicksand } from "next/font/google";
+import { Geist } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { createClient } from "@/utils/supabase/server";
 import { GoogleAnalytics } from "@next/third-parties/google";
 
-// configure the font weight
-const quicksand = Quicksand({
+// Geist is a variable font — no weight array needed, self-hosted by next/font.
+const geist = Geist({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-quicksand",
+  variable: "--font-geist",
   display: "swap",
 });
 
@@ -71,8 +70,8 @@ export default async function RootLayout({
   } = await supabase.auth.getUser();
 
   return (
-    <html lang="en" className={quicksand.variable}>
-      <body className=" bg-[#0b0f19] text-white min-h-screen font-sans">
+    <html lang="en" className={geist.variable}>
+      <body className="bg-canvas text-ink min-h-screen font-sans">
         <Navbar user={user} />
         {children}
         <Footer />
